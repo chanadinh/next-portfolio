@@ -1,64 +1,53 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ExternalLink, Github, Award, Zap, Eye, Code } from 'lucide-react'
 import Image from 'next/image'
 
+interface Project {
+  _id: string;
+  title: string;
+  description: string;
+  technologies: string[];
+  imageUrl: string;
+  githubUrl?: string;
+  liveUrl?: string;
+  featured: boolean;
+  order: number;
+}
+
 export default function Projects() {
-  const projects = [
-    {
-      id: 1,
-      title: "Project Pæmon - AI Web App",
-      description: "A Pokémon-inspired AI web app that generates personalized digital companions based on user personality traits. Co-developed at Nosu AI Hackathon, winning Best Personal Project (CodeBuff) with $650 USD prize. Features AI-generated visuals, descriptions, and music.",
-      technologies: ["Next.js", "OpenAI GPT-5", "Stable Diffusion", "TailwindCSS", "AI Integration", "Beatoven.ai"],
-      image: "/images/logo.png", // Using the actual logo from the repo
-      github: "https://github.com/chanadinh",
-      live: "https://project-paemon-31jm.vercel.app",
-      featured: true,
-      award: "Best Personal Project - Nosu AI Hackathon ($650)"
-    },
-    {
-      id: 2,
-      title: "MNIST Digit Classifier",
-      description: "Machine learning project for digit recognition using the MNIST dataset. Implemented neural networks and evaluated different ML algorithms for optimal classification accuracy.",
-      technologies: ["Python", "Machine Learning", "Neural Networks", "MNIST Dataset", "Classification"],
-      image: "/images/digit.png", // Using the actual digit image from the repo
-      github: "https://github.com/chanadinh/MNIST-Digit-Classifier-Project",
-      live: "https://github.com/chanadinh/MNIST-Digit-Classifier-Project",
-      featured: false
-    },
-    {
-      id: 3,
-      title: "Bike Sharing Demand Prediction",
-      description: "ML project using AutoGluon for automated machine learning to predict bike sharing demand. Demonstrates expertise in time series forecasting and automated ML workflows.",
-      technologies: ["Python", "AutoGluon", "Machine Learning", "Time Series", "Forecasting", "Jupyter"],
-      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop&crop=center",
-      github: "https://github.com/chanadinh/Project--Predict-Bike-Sharing-Demand-with-AutoGluon",
-      live: "https://github.com/chanadinh/Project--Predict-Bike-Sharing-Demand-with-AutoGluon",
-      featured: false
-    },
-    {
-      id: 4,
-      title: "Dog Breed Classifier",
-      description: "Computer vision project using PyTorch for dog breed classification. Evaluated CNN architectures (AlexNet, VGG, ResNet) for optimal accuracy and computational efficiency.",
-      technologies: ["Python", "PyTorch", "CNN", "AlexNet", "VGG", "ResNet", "Computer Vision"],
-      image: "https://images.unsplash.com/photo-1547407139-3c921a64105e?w=800&h=600&fit=crop&crop=center",
-      github: "https://github.com/chanadinh/Dog-Classifier",
-      live: "https://github.com/chanadinh/Dog-Classifier",
-      featured: false
-    },
-    {
-      id: 5,
-      title: "Medusa Bot - Discord Bot",
-      description: "Multi-API Discord bot with advanced features including AI chat, moderation tools, and custom commands.",
-      technologies: ["JavaScript", "Node.js", "Discord.js", "REST APIs"],
-      image: "/images/medusabot.png", // Using the actual medusa bot image from the repo
-      github: "https://github.com/chanadinh/medusa-bot",
-      live: null,
-      featured: false
-    }
-  ]
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch('/api/projects');
+        if (response.ok) {
+          const data = await response.json();
+          setProjects(data);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="projects" className="py-20 bg-white">
+        <div className="container mx-auto px-4 text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="projects" className="py-20 bg-white">
@@ -81,7 +70,7 @@ export default function Projects() {
         <div className="grid lg:grid-cols-2 gap-8">
           {projects.map((project, index) => (
             <motion.div
-              key={project.id}
+              key={project._id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -90,14 +79,34 @@ export default function Projects() {
             >
               {/* Project Image */}
               <div className="relative h-48 overflow-hidden bg-gray-100">
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  className="object-cover transition-transform duration-300 hover:scale-110"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  priority={index < 2}
-                />
+                {project.imageUrl ? (
+                  <Image
+                    src={project.imageUrl}
+                    alt={project.title}
+                    fill
+                    className="object-cover transition-transform duration-300 hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={index < 2}
+                    onError={(e) => {
+                      // Fallback to placeholder if image fails to load
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const placeholder = target.parentElement?.querySelector('.image-placeholder');
+                      if (placeholder) {
+                        (placeholder as HTMLElement).style.display = 'flex';
+                      }
+                    }}
+                  />
+                ) : null}
+                
+                {/* Fallback placeholder for missing images */}
+                <div className={`image-placeholder ${project.imageUrl ? 'hidden' : 'flex'} absolute inset-0 items-center justify-center bg-gray-200`}>
+                  <div className="text-center text-gray-500">
+                    <Code className="w-12 h-12 mx-auto mb-2" />
+                    <p className="text-sm">No Image</p>
+                  </div>
+                </div>
+                
                 {project.featured && (
                   <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
                     <Award className="w-4 h-4" />
@@ -116,16 +125,6 @@ export default function Projects() {
                   {project.description}
                 </p>
 
-                {/* Award Badge */}
-                {project.award && (
-                  <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <div className="flex items-center gap-2 text-yellow-800">
-                      <Award className="w-5 h-5 text-yellow-600" />
-                      <span className="text-sm font-semibold">{project.award}</span>
-                    </div>
-                  </div>
-                )}
-
                 {/* Technologies */}
                 <div className="flex flex-wrap gap-2 mb-6">
                   {project.technologies.map((tech, techIndex) => (
@@ -140,9 +139,9 @@ export default function Projects() {
 
                 {/* Project Links */}
                 <div className="flex gap-3">
-                  {project.github && (
+                  {project.githubUrl && (
                     <a
-                      href={project.github}
+                      href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-300"
@@ -151,9 +150,9 @@ export default function Projects() {
                       Code
                     </a>
                   )}
-                  {project.live && (
+                  {project.liveUrl && (
                     <a
-                      href={project.live}
+                      href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition-colors duration-300"

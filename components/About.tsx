@@ -1,10 +1,39 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Brain, Code, Database, Zap, Shield, Globe } from 'lucide-react'
 
+interface AboutData {
+  title: string;
+  subtitle: string;
+  description: string;
+  highlights: string[];
+  imageUrl: string;
+}
+
 export default function About() {
+  const [aboutData, setAboutData] = useState<AboutData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAboutData = async () => {
+      try {
+        const response = await fetch('/api/about');
+        if (response.ok) {
+          const data = await response.json();
+          setAboutData(data);
+        }
+      } catch (error) {
+        console.error('Error fetching about data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAboutData();
+  }, []);
+
   const features = [
     {
       icon: Brain,
@@ -51,12 +80,17 @@ export default function About() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="section-title text-gradient">About Me</h2>
+          <h2 className="section-title text-gradient">
+            {aboutData?.title || 'About Me'}
+          </h2>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-            I'm a passionate AI/ML developer and software engineer with expertise in building intelligent applications. 
-            My journey in technology has led me through various domains, from computer vision to natural language processing, 
-            always pushing the boundaries of what's possible with artificial intelligence.
+            {aboutData?.description || 'I\'m a passionate AI/ML developer and software engineer with expertise in building intelligent applications. My journey in technology has led me through various domains, from computer vision to natural language processing, always pushing the boundaries of what\'s possible with artificial intelligence.'}
           </p>
+          {aboutData?.subtitle && (
+            <p className="text-lg text-gray-600 mt-4 font-medium">
+              {aboutData.subtitle}
+            </p>
+          )}
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

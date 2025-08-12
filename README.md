@@ -11,6 +11,8 @@ A modern, responsive portfolio website built with Next.js 14, showcasing experti
 * **Professional Branding**: Personal logo and custom styling
 * **Contact Form**: Interactive contact form for potential clients and collaborators
 * **Performance Optimized**: Built with Next.js for optimal performance and SEO
+* **Admin Dashboard**: Secure content management system with JWT authentication
+* **MongoDB Integration**: Dynamic content from MongoDB Atlas database
 
 ## 🛠️ Technologies Used
 
@@ -75,11 +77,33 @@ npm run build
 
 # Start production server
 npm start
+
+# Seed database with sample data
+npm run seed
 ```
 
-## 🌐 Deployment
+## 🔐 Admin System
 
-### Vercel (Recommended)
+### Access
+- **Login**: `/login`
+- **Dashboard**: `/admin`
+- **Default Credentials**: `admin` / `admin123`
+
+### Features
+- Secure JWT authentication
+- Protected admin routes
+- Content management interface
+- MongoDB data overview
+
+### Setup
+1. Configure environment variables (see `ADMIN_SETUP.md`)
+2. Access login page
+3. Use credentials to access dashboard
+4. View and manage portfolio content
+
+**⚠️ Security**: Change default credentials immediately in production!
+
+## 🌐 Deployment
 
 1. Push your code to GitHub
 2. Connect your repository to Vercel

@@ -13,23 +13,46 @@ export default function Contact() {
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [statusMessage, setStatusMessage] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmitStatus('idle')
+    setStatusMessage('')
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    // Here you would typically send the form data to your backend
-    console.log('Form submitted:', formData)
-    
-    // Reset form
-    setFormData({ name: '', email: '', subject: '', message: '' })
-    setIsSubmitting(false)
-    
-    // Show success message (you can implement a toast notification here)
-    alert('Thank you for your message! I\'ll get back to you soon.')
+    try {
+      // Send form data to MongoDB via API
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to send message')
+      }
+
+      const result = await response.json()
+      
+      // Reset form
+      setFormData({ name: '', email: '', subject: '', message: '' })
+      
+      // Show success status
+      setSubmitStatus('success')
+      setStatusMessage('Thank you for your message! I\'ll get back to you soon.')
+      
+    } catch (error) {
+      console.error('Error sending message:', error)
+      setSubmitStatus('error')
+      setStatusMessage(error instanceof Error ? error.message : 'Failed to send message. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -49,13 +72,13 @@ export default function Contact() {
     {
       icon: Phone,
       title: 'Phone',
-      value: '+1 (555) 123-4567',
-      link: 'tel:+15551234567'
+      value: '+1 (689) 345-3588',
+      link: 'tel:+16893453588'
     },
     {
       icon: MapPin,
       title: 'Location',
-      value: 'San Francisco, CA',
+      value: 'Casselberry, FL',
       link: null
     }
   ]
@@ -271,6 +294,27 @@ export default function Contact() {
                   </>
                 )}
               </button>
+
+              {/* Status Messages */}
+              {submitStatus === 'success' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg"
+                >
+                  <p className="text-green-800 text-center">{statusMessage}</p>
+                </motion.div>
+              )}
+
+              {submitStatus === 'error' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg"
+                >
+                  <p className="text-red-800 text-center">{statusMessage}</p>
+                </motion.div>
+              )}
             </form>
           </motion.div>
         </div>

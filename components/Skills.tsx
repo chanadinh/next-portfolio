@@ -1,5 +1,6 @@
 'use client'
 
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
   Brain, 
@@ -12,75 +13,94 @@ import {
   Shield
 } from 'lucide-react'
 
+interface Skill {
+  _id: string;
+  name: string;
+  category: 'frontend' | 'backend' | 'database' | 'devops' | 'other';
+  proficiency: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  icon?: string;
+  order: number;
+}
+
 export default function Skills() {
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await fetch('/api/skills');
+        if (response.ok) {
+          const data = await response.json();
+          setSkills(data);
+        }
+      } catch (error) {
+        console.error('Error fetching skills:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSkills();
+  }, []);
+
+  // Group skills by category
   const skillCategories = [
     {
       icon: Brain,
       title: 'Machine Learning',
-      skills: [
-        { name: 'Neural Networks', level: 90 },
-        { name: 'Computer Vision', level: 85 },
-        { name: 'Natural Language Processing', level: 80 },
-        { name: 'Deep Learning', level: 85 },
-        { name: 'AutoML', level: 75 }
-      ]
+      category: 'other'
     },
     {
       icon: Code,
       title: 'Programming Languages',
-      skills: [
-        { name: 'Python', level: 95 },
-        { name: 'JavaScript/TypeScript', level: 90 },
-        { name: 'Java', level: 80 },
-        { name: 'C++', level: 75 },
-        { name: 'SQL', level: 85 }
-      ]
+      category: 'backend'
     },
     {
       icon: Globe,
       title: 'Web Technologies',
-      skills: [
-        { name: 'React/Next.js', level: 90 },
-        { name: 'Node.js', level: 85 },
-        { name: 'HTML/CSS', level: 90 },
-        { name: 'REST APIs', level: 85 },
-        { name: 'GraphQL', level: 75 }
-      ]
+      category: 'frontend'
     },
     {
       icon: Database,
       title: 'Data & ML Tools',
-      skills: [
-        { name: 'PyTorch', level: 85 },
-        { name: 'TensorFlow', level: 80 },
-        { name: 'Pandas/NumPy', level: 90 },
-        { name: 'Scikit-learn', level: 85 },
-        { name: 'AutoGluon', level: 80 }
-      ]
+      category: 'database'
     },
     {
       icon: Cloud,
       title: 'Cloud & DevOps',
-      skills: [
-        { name: 'AWS', level: 75 },
-        { name: 'Docker', level: 80 },
-        { name: 'Git', level: 90 },
-        { name: 'CI/CD', level: 75 },
-        { name: 'MongoDB', level: 80 }
-      ]
+      category: 'devops'
     },
     {
       icon: Smartphone,
       title: 'Mobile & AI',
-      skills: [
-        { name: 'React Native', level: 75 },
-        { name: 'AI Integration', level: 85 },
-        { name: 'API Development', level: 85 },
-        { name: 'Performance Optimization', level: 80 },
-        { name: 'Testing', level: 75 }
-      ]
+      category: 'other'
     }
-  ]
+  ];
+
+  const getSkillsByCategory = (category: string) => {
+    return skills.filter(skill => skill.category === category);
+  };
+
+  const getProficiencyLevel = (proficiency: string) => {
+    switch (proficiency) {
+      case 'beginner': return 25;
+      case 'intermediate': return 50;
+      case 'advanced': return 75;
+      case 'expert': return 95;
+      default: return 50;
+    }
+  };
+
+  if (loading) {
+    return (
+      <section id="skills" className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4 text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="skills" className="py-20 bg-gray-50">
@@ -120,9 +140,9 @@ export default function Skills() {
               </div>
 
               <div className="space-y-4">
-                {category.skills.map((skill, skillIndex) => (
+                {getSkillsByCategory(category.category).map((skill, skillIndex) => (
                   <motion.div
-                    key={skillIndex}
+                    key={skill._id}
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.4, delay: (categoryIndex * 0.1) + (skillIndex * 0.05) }}
@@ -133,13 +153,13 @@ export default function Skills() {
                         {skill.name}
                       </span>
                       <span className="text-sm text-primary font-semibold">
-                        {skill.level}%
+                        {getProficiencyLevel(skill.proficiency)}%
                       </span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <motion.div
                         initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
+                        whileInView={{ width: `${getProficiencyLevel(skill.proficiency)}%` }}
                         transition={{ duration: 1, delay: (categoryIndex * 0.1) + (skillIndex * 0.05) }}
                         viewport={{ once: true }}
                         className="bg-gradient-to-r from-primary to-secondary h-2 rounded-full"
