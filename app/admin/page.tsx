@@ -86,6 +86,8 @@ export default function AdminPage() {
       if (aboutRes.ok) setAbout(await aboutRes.json());
     } catch (error) {
       console.error('Error fetching data:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      console.error('Fetch error details:', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -301,6 +303,8 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error('Error deleting project:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      console.error('Delete error details:', errorMessage);
     }
   };
 
