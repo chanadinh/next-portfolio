@@ -124,7 +124,8 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error('❌ Error uploading image:', error);
-      alert(`Upload Error: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Upload Error: ${errorMessage}`);
     } finally {
       setUploading(false);
     }
@@ -188,7 +189,8 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error('❌ Error adding project:', error);
-      alert(`Error: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error: ${errorMessage}`);
     } finally {
       setUploading(false);
     }
@@ -227,7 +229,8 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error('❌ Error uploading new image:', error);
-      alert(`Upload Error: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Upload Error: ${errorMessage}`);
     } finally {
       setUploading(false);
     }
@@ -272,7 +275,8 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error('❌ Error updating project:', error);
-      alert(`Error: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error: ${errorMessage}`);
     } finally {
       setUploading(false);
     }
