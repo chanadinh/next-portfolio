@@ -31,17 +31,23 @@ interface HighScore {
   createdAt: string
 }
 
+// Detect mobile device for optimized gameplay
+const isMobile = typeof window !== 'undefined' && (
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+  window.innerWidth <= 768
+)
+
 const GAME_CONFIG = {
-  GRAVITY: 0.6,
-  FLAP_FORCE: -8,
-  PIPE_SPEED: 2,
-  PIPE_SPAWN_RATE: 100,
-  BASE_PIPE_GAP: 280,
+  GRAVITY: isMobile ? 0.5 : 0.6, // Even slower on mobile
+  FLAP_FORCE: isMobile ? -7 : -8, // Gentler flap on mobile
+  PIPE_SPEED: isMobile ? 1.5 : 2, // Slower pipes on mobile
+  PIPE_SPAWN_RATE: isMobile ? 120 : 100, // More time between pipes on mobile
+  BASE_PIPE_GAP: isMobile ? 300 : 280, // Bigger gaps on mobile
   GROUND_HEIGHT: 100,
-  PLAYER_SIZE: 80,
-  PIPE_WIDTH: 60,
-  MIN_PIPE_GAP: 220,
-  MIN_PIPE_DISTANCE: 200
+  PLAYER_SIZE: isMobile ? 70 : 80, // Slightly smaller player on mobile
+  PIPE_WIDTH: isMobile ? 50 : 60, // Thinner pipes on mobile
+  MIN_PIPE_GAP: isMobile ? 240 : 220, // Bigger minimum gaps on mobile
+  MIN_PIPE_DISTANCE: isMobile ? 250 : 200 // More space between pipes on mobile
 }
 
 export default function FlappyAdo() {
@@ -347,7 +353,6 @@ export default function FlappyAdo() {
 
   // Handle game over
   const handleGameOver = useCallback(async () => {
-    const finalScore = Math.floor(gameState.score / 2)
     const rawScore = gameState.score
     
     // Stop background music
@@ -364,7 +369,6 @@ export default function FlappyAdo() {
     
     console.log('🎮 Game Over!')
     console.log('📊 Raw Score:', rawScore)
-    console.log('📊 Final Score (divided by 2):', finalScore)
     console.log('🏆 High Score from MongoDB:', gameState.highScore)
     console.log('🔍 Current showNameInput state:', showNameInput)
     console.log('👤 Has played before:', hasPlayedBefore)
@@ -537,6 +541,14 @@ export default function FlappyAdo() {
     playSound(800, 0.05, 'sine')
   }, [gameState.isPlaying, gameState.gameOver, player.x, player.y, createParticles, playSound, calculateClickSpeed])
 
+  // Mobile touch handling with reduced sensitivity
+  const handleTouchStart = useCallback((event: TouchEvent) => {
+    event.preventDefault()
+    if (gameState.isPlaying) {
+      flap()
+    }
+  }, [flap, gameState.isPlaying])
+
   // Handle keyboard input
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -555,6 +567,17 @@ export default function FlappyAdo() {
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
   }, [flap, gameState.isPlaying])
+
+  // Handle mobile touch input
+  useEffect(() => {
+    if (isMobile) {
+      const canvas = canvasRef.current
+      if (canvas) {
+        canvas.addEventListener('touchstart', handleTouchStart, { passive: false })
+        return () => canvas.removeEventListener('touchstart', handleTouchStart)
+      }
+    }
+  }, [isMobile, handleTouchStart])
 
   // Handle mouse/touch input
   const handleCanvasClick = useCallback(() => {
@@ -635,9 +658,11 @@ export default function FlappyAdo() {
       
       if (distanceFromLastPipe >= GAME_CONFIG.MIN_PIPE_DISTANCE) {
         // Calculate dynamic pipe gap based on score - starts BIG, gets TIGHTER (harder) as score increases
+        // Mobile devices get gentler difficulty progression
+        const difficultyMultiplier = isMobile ? 2 : 3
         const currentPipeGap = Math.max(
           GAME_CONFIG.MIN_PIPE_GAP,
-          GAME_CONFIG.BASE_PIPE_GAP - (gameState.score * 3)
+          GAME_CONFIG.BASE_PIPE_GAP - (gameState.score * difficultyMultiplier)
         )
         
         const pipeHeight = Math.random() * (window.innerHeight - GAME_CONFIG.GROUND_HEIGHT - currentPipeGap - 100) + 50
@@ -890,27 +915,25 @@ export default function FlappyAdo() {
     }
 
     // Draw score with bright style
-    const displayScore = Math.floor(gameState.score / 2)
     ctx.fillStyle = 'rgba(0, 0, 0, 0.8)'
     ctx.font = 'bold 48px "Comic Sans MS", cursive'
     ctx.textAlign = 'center'
-    ctx.fillText(displayScore.toString(), canvas.width / 2 + 3, 103)
+    ctx.fillText(gameState.score.toString(), canvas.width / 2 + 3, 103)
     
     ctx.fillStyle = '#FF4500'  // Orange red
-    ctx.fillText(displayScore.toString(), canvas.width / 2, 100)
+    ctx.fillText(gameState.score.toString(), canvas.width / 2, 100)
     
-    // Draw high score with bright style (convert raw MongoDB score to display score)
-    const displayHighScore = Math.floor(gameState.highScore / 2)
+    // Draw high score with bright style
     ctx.fillStyle = 'rgba(0, 0, 0, 0.8)'
     ctx.font = 'bold 24px "Comic Sans MS", cursive'
-    ctx.fillText(`High Score: ${displayHighScore}`, canvas.width / 2 + 1, 151)
+    ctx.fillText(`High Score: ${gameState.highScore}`, canvas.width / 2 + 1, 151)
     
     ctx.fillStyle = '#FF8C00'  // Dark orange
-    ctx.fillText(`High Score: ${displayHighScore}`, canvas.width / 2, 150)
+    ctx.fillText(`High Score: ${gameState.highScore}`, canvas.width / 2, 150)
     
     // Debug: Log the high score being drawn on canvas
     if (gameState.score % 60 === 0) { // Log every 60 frames (about once per second)
-      console.log('🎨 Canvas drawing - Raw High Score:', gameState.highScore, 'Display High Score:', displayHighScore)
+      console.log('🎨 Canvas drawing - Raw High Score:', gameState.highScore, 'Display High Score:', gameState.highScore)
     }
   }
 
@@ -1042,10 +1065,10 @@ export default function FlappyAdo() {
             style={{ fontFamily: '"Comic Neue", cursive' }}
           >
             <h2 className="text-4xl font-bold mb-4">Game Over!</h2>
-            <p className="text-xl mb-4">Score: {Math.floor(gameState.score / 2)}</p>
-            <p className="text-lg mb-4">Global High Score: {Math.floor(gameState.highScore / 2)}</p>
+            <p className="text-xl mb-4">Score: {gameState.score}</p>
+            <p className="text-lg mb-4">Global High Score: {gameState.highScore}</p>
             {hasPlayedBefore && personalBest > 0 && (
-              <p className="text-lg mb-6 text-blue-600">Your Personal Best: {Math.floor(personalBest / 2)}</p>
+              <p className="text-lg mb-6 text-blue-600">Your Personal Best: {personalBest}</p>
             )}
             
             {/* Show top scores in game over screen */}
@@ -1064,7 +1087,7 @@ export default function FlappyAdo() {
                         {index + 1}. {score.name}
                         {hasPlayedBefore && score.userIP === userIP && ' (You)'}
                       </span>
-                      <span className="font-bold text-blue-600">{Math.floor(score.score / 2)}</span>
+                      <span className="font-bold text-blue-600">{score.score}</span>
                     </div>
                   ))}
                 </div>
@@ -1118,7 +1141,7 @@ export default function FlappyAdo() {
                   {index + 1}. {score.name}
                   {hasPlayedBefore && score.userIP === userIP && ' (You)'}
                 </span>
-                <span className="font-bold text-blue-600">{Math.floor(score.score / 2)}</span>
+                <span className="font-bold text-blue-600">{score.score}</span>
               </div>
             ))}
           </div>
@@ -1131,9 +1154,9 @@ export default function FlappyAdo() {
           fontFamily: '"Fredoka One", cursive',
           textShadow: '3px 3px 0px #000, -3px -3px 0px #000, 3px -3px 0px #000, -3px 3px 0px #000'
         }}>
-          <div className="text-yellow-300">Score: {Math.floor(gameState.score / 2)}</div>
+          <div className="text-yellow-300">Score: {gameState.score}</div>
           {scoresLoaded && (
-            <div className="text-green-300 text-lg">Best: {Math.floor(gameState.highScore / 2)}</div>
+            <div className="text-green-300 text-lg">Best: {gameState.highScore}</div>
           )}
         </div>
       )}
@@ -1157,19 +1180,22 @@ export default function FlappyAdo() {
                 {/* Header */}
                 <div className="text-center mb-3 pb-2 border-b-2 border-blue-400">
                   <h3 className="text-blue-300 text-sm uppercase tracking-wider">Game Dashboard</h3>
+                  {isMobile && (
+                    <div className="text-xs text-yellow-400 mt-1">📱 Mobile Optimized</div>
+                  )}
                 </div>
                 
                 {/* Stats Grid */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="text-green-300">Global Best:</span>
-                    <span className="text-white font-mono">{scoresLoaded ? Math.floor(gameState.highScore / 2) : '...'}</span>
+                    <span className="text-white font-mono">{scoresLoaded ? gameState.highScore : '...'}</span>
                   </div>
                   
                   {hasPlayedBefore && personalBest > 0 && (
                     <div className="flex justify-between items-center">
                       <span className="text-blue-300">Your Best:</span>
-                      <span className="text-white font-mono">{Math.floor(personalBest / 2)}</span>
+                      <span className="text-white font-mono">{personalBest}</span>
                     </div>
                   )}
                   
@@ -1222,12 +1248,9 @@ export default function FlappyAdo() {
         <div>showNameInput: {showNameInput ? 'true' : 'false'}</div>
         <div>gameOver: {gameState.gameOver ? 'true' : 'false'}</div>
         <div>isPlaying: {gameState.isPlaying ? 'true' : 'false'}</div>
-        <div>Raw Score: {gameState.score}</div>
-        <div>Display Score: {Math.floor(gameState.score / 2)}</div>
-        <div>Raw Global High: {gameState.highScore}</div>
-        <div>Display Global High: {Math.floor(gameState.highScore / 2)}</div>
-        <div>Raw Personal Best: {personalBest}</div>
-        <div>Display Personal Best: {Math.floor(personalBest / 2)}</div>
+        <div>Score: {gameState.score}</div>
+        <div>Global High: {gameState.highScore}</div>
+        <div>Personal Best: {personalBest}</div>
         <div>Player Rank: #{playerRank}</div>
         <div>Click Speed: {clickSpeed.toFixed(1)}/s</div>
         <div>Music Pitch Level: {clickSpeed <= 0.5 ? 'Very Low' : 
@@ -1359,7 +1382,7 @@ export default function FlappyAdo() {
       <div className="fixed inset-0 flex items-center justify-center bg-red-500 bg-opacity-80 z-[9999]">
         <div className="text-center text-gray-800 bg-white p-8 rounded-lg shadow-2xl border-2 border-gray-200 max-w-md w-full mx-4" style={{ fontFamily: '"Comic Neue", cursive' }}>
           <h2 className="text-3xl font-bold mb-4">Welcome New Player! 🎮</h2>
-          <p className="text-lg mb-6">Final Score: {Math.floor(gameState.score / 2)}</p>
+          <p className="text-lg mb-6">Final Score: {gameState.score}</p>
           <p className="text-sm text-blue-600 mb-4">First time playing? Enter your name to save your score!</p>
           <div className="mb-6">
             <label htmlFor="playerName" className="block text-sm font-medium text-gray-700 mb-2">
