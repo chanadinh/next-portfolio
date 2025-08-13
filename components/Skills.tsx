@@ -7,7 +7,6 @@ import {
   Code, 
   Database, 
   Globe, 
-  Smartphone, 
   Cloud,
   Zap,
   Shield
@@ -71,11 +70,7 @@ export default function Skills() {
       title: 'Cloud & DevOps',
       category: 'devops'
     },
-    {
-      icon: Smartphone,
-      title: 'Mobile & AI',
-      category: 'other'
-    }
+
   ];
 
   const getSkillsByCategory = (category: string) => {

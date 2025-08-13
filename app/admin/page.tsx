@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LogOut, Settings, User, Code, Briefcase, Plus, Edit, Trash2, X, Save } from 'lucide-react';
+import { LogOut, Settings, User, Code, Briefcase, Plus, Edit, Trash2, X, Save, BarChart3 } from 'lucide-react';
+import AnalyticsDashboard from '../../components/AnalyticsDashboard';
 
 interface Project {
   _id: string;
@@ -39,7 +40,7 @@ export default function AdminPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [about, setAbout] = useState<About | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'about'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'about' | 'analytics'>('projects');
   
   // Project management states
   const [showAddProject, setShowAddProject] = useState(false);
@@ -58,6 +59,17 @@ export default function AdminPage() {
   const [newTechnology, setNewTechnology] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+
+  // Skills management states
+  const [showAddSkill, setShowAddSkill] = useState(false);
+  const [showEditSkill, setShowEditSkill] = useState(false);
+  const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
+  const [newSkill, setNewSkill] = useState<Partial<Skill>>({
+    name: '',
+    category: 'backend',
+    proficiency: 'intermediate',
+    order: 0
+  });
 
   useEffect(() => {
     fetchData();
@@ -342,6 +354,109 @@ export default function AdminPage() {
     } : null);
   };
 
+  // Skills management functions
+  const handleAddSkill = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
+
+      if (!newSkill.name || !newSkill.category || !newSkill.proficiency) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      const response = await fetch('/api/skills', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newSkill)
+      });
+
+      if (response.ok) {
+        await fetchData();
+        setShowAddSkill(false);
+        setNewSkill({
+          name: '',
+          category: 'backend',
+          proficiency: 'intermediate',
+          order: 0
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create skill');
+      }
+    } catch (error) {
+      console.error('Error adding skill:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error: ${errorMessage}`);
+    }
+  };
+
+  const handleEditSkill = async () => {
+    if (!editingSkill) return;
+    
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
+
+      if (!editingSkill.name || !editingSkill.category || !editingSkill.proficiency) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      const response = await fetch('/api/skills', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editingSkill)
+      });
+
+      if (response.ok) {
+        await fetchData();
+        setShowEditSkill(false);
+        setEditingSkill(null);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update skill');
+      }
+    } catch (error) {
+      console.error('Error updating skill:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error: ${errorMessage}`);
+    }
+  };
+
+  const handleDeleteSkill = async (skillId: string) => {
+    if (!confirm('Are you sure you want to delete this skill?')) return;
+    
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
+
+      const response = await fetch(`/api/skills?id=${skillId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        await fetchData();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete skill');
+      }
+    } catch (error) {
+      console.error('Error deleting skill:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error: ${errorMessage}`);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -375,7 +490,7 @@ export default function AdminPage() {
           
           {/* Navigation Tabs */}
           <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8">
-            {(['projects', 'skills', 'about'] as const).map((tab) => (
+            {(['projects', 'skills', 'about', 'analytics'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -385,7 +500,14 @@ export default function AdminPage() {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {tab === 'analytics' ? (
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4" />
+                    Analytics
+                  </div>
+                ) : (
+                  tab.charAt(0).toUpperCase() + tab.slice(1)
+                )}
               </button>
             ))}
           </div>
@@ -472,26 +594,52 @@ export default function AdminPage() {
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold text-gray-900">Skills</h2>
-                <span className="text-sm text-gray-500">{skills.length} skills</span>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-gray-500">{skills.length} skills</span>
+                  <button
+                    onClick={() => setShowAddSkill(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition-colors duration-200"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Skill
+                  </button>
+                </div>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 {skills.map((skill) => (
                   <div key={skill._id} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex justify-between items-center">
-                      <div>
+                      <div className="flex-1">
                         <h3 className="font-semibold text-gray-900">{skill.name}</h3>
                         <p className="text-sm text-gray-500 capitalize">{skill.category}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className={`px-2 py-1 text-xs rounded-full ${
+                            skill.proficiency === 'expert' ? 'bg-green-100 text-green-800' :
+                            skill.proficiency === 'advanced' ? 'bg-blue-100 text-blue-800' :
+                            skill.proficiency === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {skill.proficiency}
+                          </span>
+                          <span className="text-xs text-gray-500">Order: {skill.order}</span>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <span className={`px-2 py-1 text-xs rounded-full ${
-                          skill.proficiency === 'expert' ? 'bg-green-100 text-green-800' :
-                          skill.proficiency === 'advanced' ? 'bg-blue-100 text-blue-800' :
-                          skill.proficiency === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {skill.proficiency}
-                        </span>
-                        <p className="text-xs text-gray-500 mt-1">Order: {skill.order}</p>
+                      <div className="flex items-center space-x-2 ml-4">
+                        <button
+                          onClick={() => {
+                            setEditingSkill(skill);
+                            setShowEditSkill(true);
+                          }}
+                          className="p-1 text-blue-600 hover:text-blue-800"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSkill(skill._id)}
+                          className="p-1 text-red-600 hover:text-red-800"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -525,6 +673,10 @@ export default function AdminPage() {
                 </div>
               )}
             </div>
+          )}
+
+          {activeTab === 'analytics' && (
+            <AnalyticsDashboard />
           )}
         </motion.div>
       </div>
@@ -920,6 +1072,184 @@ export default function AdminPage() {
                   <Save className="w-4 h-4" />
                 )}
                 {uploading ? 'Saving...' : '💾 Save Project Changes'}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Add Skill Modal */}
+      {showAddSkill && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg p-6 w-full max-w-md"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold">Add New Skill</h3>
+              <button
+                onClick={() => setShowAddSkill(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Skill Name</label>
+                <input
+                  type="text"
+                  value={newSkill.name}
+                  onChange={(e) => setNewSkill(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  placeholder="e.g., React, Python, AWS"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select
+                  value={newSkill.category}
+                  onChange={(e) => setNewSkill(prev => ({ ...prev, category: e.target.value as any }))}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                >
+                  <option value="frontend">Frontend</option>
+                  <option value="backend">Backend</option>
+                  <option value="database">Database</option>
+                  <option value="devops">DevOps</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Proficiency Level</label>
+                <select
+                  value={newSkill.proficiency}
+                  onChange={(e) => setNewSkill(prev => ({ ...prev, proficiency: e.target.value as any }))}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                >
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                  <option value="expert">Expert</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
+                <input
+                  type="number"
+                  value={newSkill.order}
+                  onChange={(e) => setNewSkill(prev => ({ ...prev, order: parseInt(e.target.value) || 0 }))}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowAddSkill(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddSkill}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary flex items-center gap-2"
+              >
+                <Save className="w-4 h-4" />
+                Create Skill
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Edit Skill Modal */}
+      {showEditSkill && editingSkill && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg p-6 w-full max-w-md"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold">Edit Skill</h3>
+              <button
+                onClick={() => setShowEditSkill(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Skill Name</label>
+                <input
+                  type="text"
+                  value={editingSkill.name}
+                  onChange={(e) => setEditingSkill(prev => prev ? { ...prev, name: e.target.value } : null)}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select
+                  value={editingSkill.category}
+                  onChange={(e) => setEditingSkill(prev => prev ? { ...prev, category: e.target.value as any } : null)}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                >
+                  <option value="frontend">Frontend</option>
+                  <option value="backend">Backend</option>
+                  <option value="database">Database</option>
+                  <option value="devops">DevOps</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Proficiency Level</label>
+                <select
+                  value={editingSkill.proficiency}
+                  onChange={(e) => setEditingSkill(prev => prev ? { ...prev, proficiency: e.target.value as any } : null)}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                >
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                  <option value="expert">Expert</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
+                <input
+                  type="number"
+                  value={editingSkill.order}
+                  onChange={(e) => setEditingSkill(prev => prev ? { ...prev, order: parseInt(e.target.value) || 0 } : null)}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowEditSkill(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEditSkill}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary flex items-center gap-2"
+              >
+                <Save className="w-4 h-4" />
+                Save Changes
               </button>
             </div>
           </motion.div>
