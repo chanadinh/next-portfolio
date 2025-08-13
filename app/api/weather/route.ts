@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 // Simple in-memory cache (in production, use Redis or similar)
 const weatherCache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
