@@ -120,7 +120,7 @@ export default function Hero() {
               <Linkedin className="w-6 h-6" />
             </Link>
             <Link
-              href="mailto:andinhc254@gmail.com"
+              href="mailto:contact@chandinh.org"
               className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-300 transform hover:scale-110 backdrop-blur-sm"
             >
               <Mail className="w-6 h-6" />

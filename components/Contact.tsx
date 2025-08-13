@@ -66,8 +66,8 @@ export default function Contact() {
     {
       icon: Mail,
       title: 'Email',
-      value: 'andinhc254@gmail.com',
-      link: 'mailto:andinhc254@gmail.com'
+              value: 'contact@chandinh.org',
+        link: 'mailto:contact@chandinh.org'
     },
     {
       icon: Phone,

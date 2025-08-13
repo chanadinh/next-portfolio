@@ -460,7 +460,7 @@ npm run seed:skills
 
 * **GitHub**: [@chanadinh](https://github.com/chanadinh)
 * **LinkedIn**: [Chan Dinh](https://linkedin.com/in/chandinh)
-* **Email**: andinhc254@gmail.com
+* **Email**: contact@chandinh.org
 * **Website**: [chandinh.org](https://chandinh.org)
 
 ## 📄 License

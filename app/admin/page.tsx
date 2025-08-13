@@ -26,14 +26,16 @@ interface Skill {
   order: number;
 }
 
-interface About {
+interface PersonalInfo {
   _id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  highlights: string[];
-  imageUrl: string;
-  order: number;
+  hobbies: string[];
+  favoriteAnime: string[];
+  favoriteShows: string[];
+  waifu: string[];
+  favoriteGames: string[];
+  favoriteMusic: string[];
+  otherInterests: string[];
+  updatedAt: string;
 }
 
 interface ContactMessage {
@@ -49,10 +51,10 @@ interface ContactMessage {
 export default function AdminPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
-  const [about, setAbout] = useState<About | null>(null);
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfo | null>(null);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'about' | 'analytics' | 'messages'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'personal-info' | 'analytics' | 'messages'>('projects');
   
   // Project management states
   const [showAddProject, setShowAddProject] = useState(false);
@@ -83,6 +85,21 @@ export default function AdminPage() {
     order: 0
   });
 
+  // Personal info management states
+  const [showEditPersonalInfo, setShowEditPersonalInfo] = useState(false);
+  const [editingPersonalInfo, setEditingPersonalInfo] = useState<PersonalInfo | null>(null);
+  const [newPersonalInfo, setNewPersonalInfo] = useState<Partial<PersonalInfo>>({
+    hobbies: [],
+    favoriteAnime: [],
+    favoriteShows: [],
+    waifu: [],
+    favoriteGames: [],
+    favoriteMusic: [],
+    otherInterests: []
+  });
+  const [newItem, setNewItem] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<keyof PersonalInfo>('hobbies');
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -99,17 +116,17 @@ export default function AdminPage() {
         'Content-Type': 'application/json'
       };
 
-      const [projectsRes, skillsRes, aboutRes, messagesRes] = await Promise.all([
+      const [projectsRes, skillsRes, messagesRes, personalInfoRes] = await Promise.all([
         fetch('/api/projects', { headers }),
         fetch('/api/skills', { headers }),
-        fetch('/api/about', { headers }),
-        fetch('/api/contact', { headers })
+        fetch('/api/contact', { headers }),
+        fetch('/api/personal-info', { headers })
       ]);
 
       if (projectsRes.ok) setProjects(await projectsRes.json());
       if (skillsRes.ok) setSkills(await skillsRes.json());
-      if (aboutRes.ok) setAbout(await aboutRes.json());
       if (messagesRes.ok) setMessages(await messagesRes.json());
+      if (personalInfoRes.ok) setPersonalInfo(await personalInfoRes.json());
     } catch (error) {
       console.error('Error fetching data:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -471,6 +488,110 @@ export default function AdminPage() {
     }
   };
 
+  // Personal info management functions
+  const handleAddPersonalInfo = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
+
+      const response = await fetch('/api/personal-info', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newPersonalInfo)
+      });
+
+      if (response.ok) {
+        const createdInfo = await response.json();
+        console.log('✅ Personal info created successfully:', createdInfo);
+        await fetchData();
+        setShowEditPersonalInfo(false);
+        setNewPersonalInfo({
+          hobbies: [],
+          favoriteAnime: [],
+          favoriteShows: [],
+          waifu: [],
+          favoriteGames: [],
+          favoriteMusic: [],
+          otherInterests: []
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create personal info');
+      }
+    } catch (error) {
+      console.error('Error adding personal info:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error: ${errorMessage}`);
+    }
+  };
+
+  const handleEditPersonalInfo = async () => {
+    if (!editingPersonalInfo) return;
+    
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
+
+      const response = await fetch(`/api/personal-info/${editingPersonalInfo._id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editingPersonalInfo)
+      });
+
+      if (response.ok) {
+        const updatedInfo = await response.json();
+        console.log('✅ Personal info updated successfully:', updatedInfo);
+        await fetchData();
+        setShowEditPersonalInfo(false);
+        setEditingPersonalInfo(null);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update personal info');
+      }
+    } catch (error) {
+      console.error('Error updating personal info:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Error: ${errorMessage}`);
+    }
+  };
+
+  const addItemToCategory = () => {
+    if (newItem.trim()) {
+      if (editingPersonalInfo) {
+        setEditingPersonalInfo(prev => prev ? {
+          ...prev,
+          [selectedCategory]: [...(prev[selectedCategory] as string[]), newItem.trim()]
+        } : null);
+      } else {
+        setNewPersonalInfo(prev => ({
+          ...prev,
+          [selectedCategory]: [...(prev[selectedCategory] as string[] || []), newItem.trim()]
+        }));
+      }
+      setNewItem('');
+    }
+  };
+
+  const removeItemFromCategory = (category: keyof PersonalInfo, item: string) => {
+    if (editingPersonalInfo) {
+      setEditingPersonalInfo(prev => prev ? {
+        ...prev,
+        [category]: (prev[category] as string[]).filter(i => i !== item)
+      } : null);
+    } else {
+      setNewPersonalInfo(prev => ({
+        ...prev,
+        [category]: (prev[category] as string[] || []).filter(i => i !== item)
+      }));
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -506,7 +627,7 @@ export default function AdminPage() {
           
           {/* Navigation Tabs */}
           <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8">
-            {(['projects', 'skills', 'about', 'analytics', 'messages'] as const).map((tab) => (
+            {(['projects', 'skills', 'personal-info', 'analytics', 'messages'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -525,6 +646,11 @@ export default function AdminPage() {
                   <div className="flex items-center gap-2">
                     <MessageCircle className="w-4 h-4" />
                     Messages
+                  </div>
+                ) : tab === 'personal-info' ? (
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Personal Info
                   </div>
                 ) : (
                   tab.charAt(0).toUpperCase() + tab.slice(1)
@@ -669,28 +795,162 @@ export default function AdminPage() {
             </div>
           )}
 
-          {activeTab === 'about' && (
+          {activeTab === 'personal-info' && (
             <div>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900">About</h2>
-                <span className="text-sm text-gray-500">1 section</span>
+                <h2 className="text-2xl font-semibold text-gray-900">Personal Information</h2>
+                                  <button
+                    onClick={() => {
+                      if (personalInfo) {
+                        setEditingPersonalInfo(personalInfo);
+                      } else {
+                        setEditingPersonalInfo(null);
+                      }
+                      setShowEditPersonalInfo(true);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition-colors duration-200"
+                  >
+                    <Edit className="w-4 h-4" />
+                    {personalInfo ? 'Edit Personal Info' : 'Add Personal Info'}
+                  </button>
               </div>
-              {about && (
-                <div className="border border-gray-200 rounded-lg p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{about.title}</h3>
-                  <p className="text-gray-600 mb-4">{about.subtitle}</p>
-                  <p className="text-gray-700 mb-4">{about.description}</p>
-                  <div className="mb-4">
-                    <h4 className="font-medium text-gray-900 mb-2">Highlights:</h4>
-                    <ul className="list-disc list-inside space-y-1">
-                      {about.highlights.map((highlight, index) => (
-                        <li key={index} className="text-gray-600">{highlight}</li>
-                      ))}
-                    </ul>
+              
+              {personalInfo ? (
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="border border-gray-200 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      🎯 Hobbies
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {personalInfo.hobbies.length > 0 ? (
+                        personalInfo.hobbies.map((hobby, index) => (
+                          <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                            {hobby}
+                          </span>
+                        ))
+                      ) : (
+                        <p className="text-gray-500 text-sm">No hobbies added yet</p>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-500">
-                    Image: {about.imageUrl} | Order: {about.order}
+
+                  <div className="border border-gray-200 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      🎌 Favorite Anime
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {personalInfo.favoriteAnime.length > 0 ? (
+                        personalInfo.favoriteAnime.map((anime, index) => (
+                          <span key={index} className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full">
+                            {anime}
+                          </span>
+                        ))
+                      ) : (
+                        <p className="text-gray-500 text-sm">No anime added yet</p>
+                      )}
+                    </div>
                   </div>
+
+                  <div className="border border-gray-200 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      📺 Favorite Shows
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {personalInfo.favoriteShows.length > 0 ? (
+                        personalInfo.favoriteShows.map((show, index) => (
+                          <span key={index} className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                            {show}
+                          </span>
+                        ))
+                      ) : (
+                        <p className="text-gray-500 text-sm">No shows added yet</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="border border-gray-200 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      💕 Waifu
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {personalInfo.waifu.length > 0 ? (
+                        personalInfo.waifu.map((waifu, index) => (
+                          <span key={index} className="px-3 py-1 bg-pink-100 text-pink-800 text-sm rounded-full">
+                            {waifu}
+                          </span>
+                        ))
+                      ) : (
+                        <p className="text-gray-500 text-sm">No waifu added yet</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="border border-gray-200 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      🎮 Favorite Games
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {personalInfo.favoriteGames.length > 0 ? (
+                        personalInfo.favoriteGames.map((game, index) => (
+                          <span key={index} className="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded-full">
+                            {game}
+                          </span>
+                          ))
+                        ) : (
+                          <p className="text-gray-500 text-sm">No games added yet</p>
+                        )}
+                    </div>
+                  </div>
+
+                  <div className="border border-gray-200 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      🎵 Favorite Music
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {personalInfo.favoriteMusic.length > 0 ? (
+                        personalInfo.favoriteMusic.map((music, index) => (
+                          <span key={index} className="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm rounded-full">
+                            {music}
+                          </span>
+                        ))
+                      ) : (
+                        <p className="text-gray-500 text-sm">No music added yet</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="border border-gray-200 rounded-lg p-6 md:col-span-2">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      🌟 Other Interests
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {personalInfo.otherInterests.length > 0 ? (
+                        personalInfo.otherInterests.map((interest, index) => (
+                          <span key={index} className="px-3 py-1 bg-gray-100 text-gray-800 text-sm rounded-full">
+                            {interest}
+                          </span>
+                        ))
+                      ) : (
+                        <p className="text-gray-500 text-sm">No other interests added yet</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2 text-center text-sm text-gray-500">
+                    Last updated: {new Date(personalInfo.updatedAt).toLocaleString()}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No personal information yet</h3>
+                  <p className="text-gray-500 mb-4">Add your hobbies, favorite anime, shows, and more!</p>
+                  <button
+                    onClick={() => setShowEditPersonalInfo(true)}
+                    className="px-6 py-3 bg-primary hover:bg-secondary text-white rounded-lg transition-colors duration-200"
+                  >
+                    Add Personal Info
+                  </button>
                 </div>
               )}
             </div>
@@ -1333,6 +1593,333 @@ export default function AdminPage() {
               >
                 <Save className="w-4 h-4" />
                 Save Changes
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Edit Personal Info Modal */}
+      {showEditPersonalInfo && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h3 className="text-xl font-semibold">
+                  {editingPersonalInfo ? 'Edit Personal Information' : 'Add Personal Information'}
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">Manage your hobbies, favorite anime, shows, and more!</p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowEditPersonalInfo(false);
+                  setEditingPersonalInfo(null);
+                  setNewPersonalInfo({
+                    hobbies: [],
+                    favoriteAnime: [],
+                    favoriteShows: [],
+                    waifu: [],
+                    favoriteGames: [],
+                    favoriteMusic: [],
+                    otherInterests: []
+                  });
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Hobbies */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-gray-900">🎯 Hobbies</h4>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={selectedCategory === 'hobbies' ? newItem : ''}
+                    onChange={(e) => {
+                      setSelectedCategory('hobbies');
+                      setNewItem(e.target.value);
+                    }}
+                    onKeyPress={(e) => e.key === 'Enter' && addItemToCategory()}
+                    placeholder="Add hobby"
+                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  />
+                  <button
+                    onClick={addItemToCategory}
+                    className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-secondary"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(editingPersonalInfo?.hobbies || newPersonalInfo.hobbies || []).map((hobby, index) => (
+                    <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full flex items-center gap-1">
+                      {hobby}
+                      <button
+                        onClick={() => removeItemFromCategory('hobbies', hobby)}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Favorite Anime */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-gray-900">🎌 Favorite Anime</h4>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={selectedCategory === 'favoriteAnime' ? newItem : ''}
+                    onChange={(e) => {
+                      setSelectedCategory('favoriteAnime');
+                      setNewItem(e.target.value);
+                    }}
+                    onKeyPress={(e) => e.key === 'Enter' && addItemToCategory()}
+                    placeholder="Add anime"
+                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  />
+                  <button
+                    onClick={addItemToCategory}
+                    className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-secondary"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(editingPersonalInfo?.favoriteAnime || newPersonalInfo.favoriteAnime || []).map((anime, index) => (
+                    <span key={index} className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full flex items-center gap-1">
+                      {anime}
+                      <button
+                        onClick={() => removeItemFromCategory('favoriteAnime', anime)}
+                        className="text-purple-600 hover:text-purple-800"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Favorite Shows */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-gray-900">📺 Favorite Shows</h4>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={selectedCategory === 'favoriteShows' ? newItem : ''}
+                    onChange={(e) => {
+                      setSelectedCategory('favoriteShows');
+                      setNewItem(e.target.value);
+                    }}
+                    onKeyPress={(e) => e.key === 'Enter' && addItemToCategory()}
+                    placeholder="Add show"
+                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  />
+                  <button
+                    onClick={addItemToCategory}
+                    className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-secondary"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(editingPersonalInfo?.favoriteShows || newPersonalInfo.favoriteShows || []).map((show, index) => (
+                    <span key={index} className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full flex items-center gap-1">
+                      {show}
+                      <button
+                        onClick={() => removeItemFromCategory('favoriteShows', show)}
+                        className="text-green-600 hover:text-green-800"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Waifu */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-gray-900">💕 Waifu</h4>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={selectedCategory === 'waifu' ? newItem : ''}
+                    onChange={(e) => {
+                      setSelectedCategory('waifu');
+                      setNewItem(e.target.value);
+                    }}
+                    onKeyPress={(e) => e.key === 'Enter' && addItemToCategory()}
+                    placeholder="Add waifu"
+                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  />
+                  <button
+                    onClick={addItemToCategory}
+                    className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-secondary"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(editingPersonalInfo?.waifu || newPersonalInfo.waifu || []).map((waifu, index) => (
+                    <span key={index} className="px-3 py-1 bg-pink-100 text-pink-800 text-sm rounded-full flex items-center gap-1">
+                      {waifu}
+                      <button
+                        onClick={() => removeItemFromCategory('waifu', waifu)}
+                        className="text-pink-600 hover:text-pink-800"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Favorite Games */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-gray-900">🎮 Favorite Games</h4>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={selectedCategory === 'favoriteGames' ? newItem : ''}
+                    onChange={(e) => {
+                      setSelectedCategory('favoriteGames');
+                      setNewItem(e.target.value);
+                    }}
+                    onKeyPress={(e) => e.key === 'Enter' && addItemToCategory()}
+                    placeholder="Add game"
+                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  />
+                  <button
+                    onClick={addItemToCategory}
+                    className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-secondary"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(editingPersonalInfo?.favoriteGames || newPersonalInfo.favoriteGames || []).map((game, index) => (
+                    <span key={index} className="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded-full flex items-center gap-1">
+                      {game}
+                      <button
+                        onClick={() => removeItemFromCategory('favoriteGames', game)}
+                        className="text-orange-600 hover:text-orange-800"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Favorite Music */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-gray-900">🎵 Favorite Music</h4>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={selectedCategory === 'favoriteMusic' ? newItem : ''}
+                    onChange={(e) => {
+                      setSelectedCategory('favoriteMusic');
+                      setNewItem(e.target.value);
+                    }}
+                    onKeyPress={(e) => e.key === 'Enter' && addItemToCategory()}
+                    placeholder="Add music"
+                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  />
+                  <button
+                    onClick={addItemToCategory}
+                    className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-secondary"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(editingPersonalInfo?.favoriteMusic || newPersonalInfo.favoriteMusic || []).map((music, index) => (
+                    <span key={index} className="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm rounded-full flex items-center gap-1">
+                      {music}
+                      <button
+                        onClick={() => removeItemFromCategory('favoriteMusic', music)}
+                        className="text-indigo-600 hover:text-indigo-800"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Other Interests */}
+              <div className="space-y-3 md:col-span-2">
+                <h4 className="font-medium text-gray-900">🌟 Other Interests</h4>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={selectedCategory === 'otherInterests' ? newItem : ''}
+                    onChange={(e) => {
+                      setSelectedCategory('otherInterests');
+                      setNewItem(e.target.value);
+                    }}
+                    onKeyPress={(e) => e.key === 'Enter' && addItemToCategory()}
+                    placeholder="Add interest"
+                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  />
+                  <button
+                    onClick={addItemToCategory}
+                    className="px-3 py-2 bg-primary text-white rounded-lg hover:bg-secondary"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(editingPersonalInfo?.otherInterests || newPersonalInfo.otherInterests || []).map((interest, index) => (
+                    <span key={index} className="px-3 py-1 bg-gray-100 text-gray-800 text-sm rounded-full flex items-center gap-1">
+                      {interest}
+                      <button
+                        onClick={() => removeItemFromCategory('otherInterests', interest)}
+                        className="text-gray-600 hover:text-gray-800"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => {
+                  setShowEditPersonalInfo(false);
+                  setEditingPersonalInfo(null);
+                  setNewPersonalInfo({
+                    hobbies: [],
+                    favoriteAnime: [],
+                    favoriteShows: [],
+                    waifu: [],
+                    favoriteGames: [],
+                    favoriteMusic: [],
+                    otherInterests: []
+                  });
+                }}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={editingPersonalInfo ? handleEditPersonalInfo : handleAddPersonalInfo}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary flex items-center gap-2"
+              >
+                <Save className="w-4 h-4" />
+                {editingPersonalInfo ? 'Save Changes' : 'Create Personal Info'}
               </button>
             </div>
           </motion.div>
