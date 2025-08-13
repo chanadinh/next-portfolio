@@ -90,9 +90,9 @@ export async function GET(request: NextRequest) {
 // Clean up old cache entries periodically
 setInterval(() => {
   const now = Date.now();
-  for (const [key, value] of weatherCache.entries()) {
+  weatherCache.forEach((value, key) => {
     if (now - value.timestamp > CACHE_DURATION) {
       weatherCache.delete(key);
     }
-  }
+  });
 }, CACHE_DURATION);
