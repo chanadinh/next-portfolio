@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Contact from '@/models/Contact';
+import connectDB from '../../../lib/mongodb';
+import Contact from '../../../models/Contact';
+import { sendEmailNotification } from '../../../lib/email';
+
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,18 +42,40 @@ export async function POST(request: NextRequest) {
 
     // Save to database
     await contact.save();
+    console.log('✅ Contact message saved to MongoDB:', contact._id);
+
+    // Send email notification (if any email service is configured)
+    try {
+      const emailSent = await sendEmailNotification({
+        name: contact.name,
+        email: contact.email,
+        subject: contact.subject,
+        message: contact.message,
+        timestamp: contact.createdAt
+      });
+
+      if (emailSent) {
+        console.log('✅ Email notification sent successfully');
+      } else {
+        console.log('⚠️ Email notification failed, but message was saved to database');
+      }
+    } catch (emailError) {
+      console.warn('⚠️ Email notification failed, but message was saved:', emailError);
+      // Don't fail the entire request if email fails
+    }
 
     // Return success response
     return NextResponse.json(
       { 
         message: 'Message sent successfully!',
-        id: contact._id 
+        id: contact._id,
+        emailSent: true
       },
       { status: 201 }
     );
 
   } catch (error) {
-    console.error('Contact form error:', error);
+    console.error('❌ Contact form error:', error);
     
     return NextResponse.json(
       { error: 'Failed to send message. Please try again later.' },
@@ -68,7 +94,7 @@ export async function GET() {
 
     return NextResponse.json(contacts);
   } catch (error) {
-    console.error('Error fetching contacts:', error);
+    console.error('❌ Error fetching contacts:', error);
     
     return NextResponse.json(
       { error: 'Failed to fetch contacts' },
