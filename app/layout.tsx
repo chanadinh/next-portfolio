@@ -67,6 +67,9 @@ export default function RootLayout({
         <meta name="msapplication-TileImage" content="/images/logo.png" />
         <meta name="msapplication-TileColor" content="#000000" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Sniglet:wght@400;800&family=Comic+Neue:wght@300;400;700&display=swap" rel="stylesheet" />
       </head>
       <body>
         {children}
