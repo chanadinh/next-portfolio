@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LogOut, Settings, User, Code, Briefcase, Plus, Edit, Trash2, X, Save, BarChart3 } from 'lucide-react';
 import AnalyticsDashboard from '../../components/AnalyticsDashboard';
+import Navigation from '../../components/Navigation';
 
 interface Project {
   _id: string;
@@ -467,6 +468,8 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      <div className="pt-20">
         <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1255,6 +1258,7 @@ export default function AdminPage() {
           </motion.div>
         </div>
       )}
+    </div>
     </div>
   );
 }
