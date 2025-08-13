@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { LogOut, Settings, User, Code, Briefcase, Plus, Edit, Trash2, X, Save, BarChart3 } from 'lucide-react';
+import { LogOut, Settings, User, Code, Briefcase, Plus, Edit, Trash2, X, Save, BarChart3, MessageCircle } from 'lucide-react';
 import AnalyticsDashboard from '../../components/AnalyticsDashboard';
 import Navigation from '../../components/Navigation';
 
@@ -36,12 +36,23 @@ interface About {
   order: number;
 }
 
+interface ContactMessage {
+  _id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default function AdminPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [about, setAbout] = useState<About | null>(null);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'about' | 'analytics'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'about' | 'analytics' | 'messages'>('projects');
   
   // Project management states
   const [showAddProject, setShowAddProject] = useState(false);
@@ -88,15 +99,17 @@ export default function AdminPage() {
         'Content-Type': 'application/json'
       };
 
-      const [projectsRes, skillsRes, aboutRes] = await Promise.all([
+      const [projectsRes, skillsRes, aboutRes, messagesRes] = await Promise.all([
         fetch('/api/projects', { headers }),
         fetch('/api/skills', { headers }),
-        fetch('/api/about', { headers })
+        fetch('/api/about', { headers }),
+        fetch('/api/contact', { headers })
       ]);
 
       if (projectsRes.ok) setProjects(await projectsRes.json());
       if (skillsRes.ok) setSkills(await skillsRes.json());
       if (aboutRes.ok) setAbout(await aboutRes.json());
+      if (messagesRes.ok) setMessages(await messagesRes.json());
     } catch (error) {
       console.error('Error fetching data:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -493,7 +506,7 @@ export default function AdminPage() {
           
           {/* Navigation Tabs */}
           <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8">
-            {(['projects', 'skills', 'about', 'analytics'] as const).map((tab) => (
+            {(['projects', 'skills', 'about', 'analytics', 'messages'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -507,6 +520,11 @@ export default function AdminPage() {
                   <div className="flex items-center gap-2">
                     <BarChart3 className="w-4 h-4" />
                     Analytics
+                  </div>
+                ) : tab === 'messages' ? (
+                  <div className="flex items-center gap-2">
+                    <MessageCircle className="w-4 h-4" />
+                    Messages
                   </div>
                 ) : (
                   tab.charAt(0).toUpperCase() + tab.slice(1)
@@ -680,6 +698,68 @@ export default function AdminPage() {
 
           {activeTab === 'analytics' && (
             <AnalyticsDashboard />
+          )}
+
+          {activeTab === 'messages' && (
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-semibold text-gray-900">Contact Messages</h2>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-gray-500">{messages.length} messages</span>
+                  <button
+                    onClick={() => fetchData()}
+                    className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Refresh
+                  </button>
+                </div>
+              </div>
+              
+              {messages.length === 0 ? (
+                <div className="text-center py-12">
+                  <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No messages yet</h3>
+                  <p className="text-gray-500">Contact form submissions will appear here</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {messages.map((message) => (
+                    <div key={message._id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <h3 className="text-xl font-semibold text-gray-900">{message.subject}</h3>
+                          <p className="text-gray-600 mt-1">
+                            From: <span className="font-medium">{message.name}</span> ({message.email})
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs text-gray-500">
+                            {new Date(message.createdAt).toLocaleDateString()}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            {new Date(message.createdAt).toLocaleTimeString()}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <p className="text-gray-700 whitespace-pre-wrap">{message.message}</p>
+                      </div>
+                      
+                      <div className="mt-4 pt-4 border-t border-gray-200">
+                        <div className="flex justify-between items-center text-xs text-gray-500">
+                          <span>Message ID: {message._id}</span>
+                          <span>Last updated: {new Date(message.updatedAt).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
         </motion.div>
       </div>

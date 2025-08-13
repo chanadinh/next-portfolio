@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '../../../lib/mongodb';
 import Contact from '../../../models/Contact';
-import { sendEmailNotification } from '../../../lib/email';
+import { sendEmailNotification, sendAutoReply } from '../../../lib/email';
 
 // Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic';
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     await contact.save();
     console.log('✅ Contact message saved to MongoDB:', contact._id);
 
-    // Send email notification (if any email service is configured)
+    // Send email notification to admin (if any email service is configured)
     try {
       const emailSent = await sendEmailNotification({
         name: contact.name,
@@ -61,15 +61,33 @@ export async function POST(request: NextRequest) {
       }
     } catch (emailError) {
       console.warn('⚠️ Email notification failed, but message was saved:', emailError);
-      // Don't fail the entire request if email fails
+    }
+
+    // Send automatic professional reply to the user
+    try {
+      const autoReplySent = await sendAutoReply({
+        name: contact.name,
+        email: contact.email,
+        subject: contact.subject,
+        message: contact.message
+      });
+
+      if (autoReplySent) {
+        console.log('✅ Auto-reply sent successfully to user');
+      } else {
+        console.log('⚠️ Auto-reply failed, but message was saved to database');
+      }
+    } catch (autoReplyError) {
+      console.warn('⚠️ Auto-reply failed, but message was saved:', autoReplyError);
     }
 
     // Return success response
     return NextResponse.json(
       { 
-        message: 'Message sent successfully!',
+        message: 'Message sent successfully! You will receive a confirmation email shortly.',
         id: contact._id,
-        emailSent: true
+        emailSent: true,
+        autoReplySent: true
       },
       { status: 201 }
     );
