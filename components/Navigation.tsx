@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Menu, X, Home, User, Code, Briefcase, MessageCircle, Calculator, Settings } from 'lucide-react'
+import { Menu, X, Home, User, Code, Briefcase, MessageCircle, Calculator, Settings, CloudRain } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -18,6 +18,7 @@ function Navigation() {
     { name: 'Projects', href: '#projects', icon: Briefcase },
     { name: 'Contact', href: '#contact', icon: MessageCircle },
     { name: 'Graphing Calculator', href: '/graph', icon: Calculator },
+    { name: 'Storm Tracker', href: '/weather', icon: CloudRain },
     { name: 'Admin', href: '/login', icon: Settings },
   ]
 
