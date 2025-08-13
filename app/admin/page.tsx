@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LogOut, Settings, User, Code, Briefcase, Plus, Edit, Trash2, X, Save, BarChart3, MessageCircle } from 'lucide-react';
 import AnalyticsDashboard from '../../components/AnalyticsDashboard';
+import ChatAnalytics from '../../components/ChatAnalytics';
 import Navigation from '../../components/Navigation';
 
 interface Project {
@@ -957,7 +958,17 @@ export default function AdminPage() {
           )}
 
           {activeTab === 'analytics' && (
-            <AnalyticsDashboard />
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-900 mb-6">General Analytics</h2>
+                <AnalyticsDashboard />
+              </div>
+              
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-900 mb-6">Chat Analytics</h2>
+                <ChatAnalytics />
+              </div>
+            </div>
           )}
 
           {activeTab === 'messages' && (

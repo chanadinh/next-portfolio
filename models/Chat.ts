@@ -9,6 +9,8 @@ export interface IMessage {
 export interface IChat {
   sessionId: string;
   messages: IMessage[];
+  userIp: string;
+  userAgent?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -36,6 +38,15 @@ const ChatSchema = new mongoose.Schema<IChat>({
     index: true
   },
   messages: [MessageSchema],
+  userIp: {
+    type: String,
+    required: true,
+    index: true
+  },
+  userAgent: {
+    type: String,
+    required: false
+  },
   createdAt: {
     type: Date,
     default: Date.now

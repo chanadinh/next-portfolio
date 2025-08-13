@@ -3,9 +3,37 @@ import connectDB from '../../../lib/mongodb'
 import Chat from '../../../models/Chat'
 import { connectToDatabase } from '../../../lib/mongodb'
 
+// Helper function to get client IP address
+function getClientIP(request: NextRequest): string {
+  // Check for forwarded headers first (common with proxies)
+  const forwarded = request.headers.get('x-forwarded-for')
+  if (forwarded) {
+    return forwarded.split(',')[0].trim()
+  }
+  
+  // Check for real IP header
+  const realIP = request.headers.get('x-real-ip')
+  if (realIP) {
+    return realIP
+  }
+  
+  // Fallback to connection remote address
+  const connection = (request as any).connection
+  if (connection?.remoteAddress) {
+    return connection.remoteAddress
+  }
+  
+  // Default fallback
+  return 'unknown'
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { messages, sessionId } = await request.json()
+
+    // Get client IP and user agent
+    const clientIP = getClientIP(request)
+    const userAgent = request.headers.get('user-agent') || 'unknown'
 
     // Check if OpenAI API key is configured
     const openaiApiKey = process.env.OPENAI_API_KEY
@@ -137,9 +165,11 @@ When appropriate, you can:
       throw new Error('No response from OpenAI')
     }
 
-    // Save chat history to MongoDB
+    // Save chat history to MongoDB with IP and user agent
     const chatData = {
       sessionId: sessionId || `session_${Date.now()}`,
+      userIp: clientIP,
+      userAgent: userAgent,
       messages: [
         ...messages.map((msg: any) => ({
           role: msg.role,
@@ -160,12 +190,17 @@ When appropriate, you can:
     if (chat) {
       // Update existing chat
       chat.messages = chatData.messages
+      chat.userIp = clientIP // Update IP in case it changed
+      chat.userAgent = userAgent
       await chat.save()
     } else {
       // Create new chat
       chat = new Chat(chatData)
       await chat.save()
     }
+
+    // Log chat activity for monitoring
+    console.log(`💬 Chat saved - Session: ${chatData.sessionId}, IP: ${clientIP}, Messages: ${chatData.messages.length}`)
 
     return NextResponse.json({ 
       message: assistantMessage,

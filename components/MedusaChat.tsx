@@ -246,7 +246,7 @@ export default function MedusaChat() {
               {/* Demo Notice */}
               <div className="mt-4 text-center">
                 <p className="text-xs text-gray-500">
-                  💡 Chat history is now saved to MongoDB! Your conversations will persist across sessions.
+                  💡 Chat history is now saved to MongoDB with IP tracking! Your conversations will persist across sessions.
                 </p>
               </div>
             </div>
