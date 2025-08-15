@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import StormTracker from '../../components/StormTracker';
+
 import Navigation from '../../components/Navigation';
 
 export default function WeatherPage() {
@@ -12,15 +12,17 @@ export default function WeatherPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-white mb-4">
-              🌊 Live Tropical Storm Tracker
+              🌤️ Weather Dashboard
             </h1>
             <p className="text-xl text-blue-100">
-              Real-time tracking of Tropical Storm ERIN with live NHC tracking maps and updates
+              Check current weather conditions and forecasts
             </p>
           </div>
 
-          {/* Hurricane Tracker */}
-          <StormTracker />
+          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+            <p className="text-gray-600 mb-4">Weather information will be displayed here.</p>
+            <p className="text-sm text-gray-500">Coming soon...</p>
+          </div>
         </div>
       </div>
     </div>

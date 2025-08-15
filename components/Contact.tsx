@@ -123,13 +123,13 @@ export default function Contact() {
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Information */}
+          {/* Contact Information - Order 2 on mobile, Order 1 on desktop */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="space-y-8"
+            className="space-y-8 order-2 lg:order-1"
           >
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-6">
@@ -198,13 +198,13 @@ export default function Contact() {
             </div>
           </motion.div>
 
-          {/* Contact Form */}
+          {/* Contact Form - Order 1 on mobile, Order 2 on desktop */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="card p-8"
+            className="card p-8 order-1 lg:order-2"
           >
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
               Send a Message

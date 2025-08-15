@@ -20,6 +20,59 @@ interface Project {
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(2);
+  const [showLoadMore, setShowLoadMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const handleLoadMore = () => {
+    setIsLoadingMore(true);
+    
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+      const previousCount = visibleCount;
+      setVisibleCount(prev => Math.min(prev + 2, projects.length));
+      setIsLoadingMore(false);
+      
+      // Smooth scroll to show newly loaded projects
+      setTimeout(() => {
+        // Find the first newly loaded project
+        const projectElements = document.querySelectorAll('#projects .card');
+        if (projectElements.length > 0) {
+          // Scroll to the first newly loaded project (previous count)
+          const targetProject = projectElements[previousCount];
+          if (targetProject) {
+            targetProject.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center' // Center the new project in view
+            });
+            
+            // Add highlight effect to newly loaded projects
+            const newlyLoadedProjects = Array.from(projectElements).slice(previousCount);
+            newlyLoadedProjects.forEach((project, index) => {
+              // Add highlight ring
+              project.classList.add('ring-4', 'ring-primary/30', 'ring-offset-2');
+              
+              // Add subtle bounce effect
+              const projectElement = project as HTMLElement;
+              projectElement.style.transform = 'scale(1.02)';
+              setTimeout(() => {
+                projectElement.style.transform = 'scale(1)';
+              }, 300);
+              
+              // Remove highlight after 2 seconds
+              setTimeout(() => {
+                project.classList.remove('ring-4', 'ring-primary/30', 'ring-offset-2');
+              }, 2000 + (index * 200)); // Staggered removal for visual effect
+            });
+          }
+        }
+      }, 100);
+    }, 500);
+  };
+
+  const handleShowLess = () => {
+    setVisibleCount(2);
+  };
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -28,6 +81,8 @@ export default function Projects() {
         if (response.ok) {
           const data = await response.json();
           setProjects(data);
+          // Show load more button if there are more than 3 projects
+          setShowLoadMore(data.length > 3);
         }
       } catch (error) {
         console.error('Error fetching projects:', error);
@@ -67,15 +122,26 @@ export default function Projects() {
           </p>
         </motion.div>
 
+        {/* Projects Counter */}
+        {showLoadMore && (
+          <div className="text-center mb-6 text-gray-600">
+            Showing {visibleCount} of {projects.length} projects
+          </div>
+        )}
+
         <div className="grid lg:grid-cols-2 gap-8">
-          {projects.map((project, index) => (
+          {projects.slice(0, visibleCount).map((project, index) => (
             <motion.div
               key={project._id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ 
+                duration: 0.6, 
+                delay: Math.min(index * 0.1, 0.5), // Cap delay for smooth loading
+                scale: { duration: 0.4, ease: "easeOut" }
+              }}
               viewport={{ once: true }}
-              className={`card overflow-hidden ${project.featured ? 'ring-2 ring-primary/20' : ''}`}
+              className={`card overflow-hidden transition-all duration-300 ease-out ${project.featured ? 'ring-2 ring-primary/20' : ''}`}
             >
               {/* Project Image */}
               <div className="relative h-48 overflow-hidden bg-gray-100">
@@ -167,13 +233,54 @@ export default function Projects() {
           ))}
         </div>
 
-        {/* View More Projects */}
+        {/* Load More / Show Less Buttons */}
+        {showLoadMore && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            {visibleCount < projects.length ? (
+              <button
+                onClick={handleLoadMore}
+                disabled={isLoadingMore}
+                className={`btn-primary inline-flex items-center gap-2 px-8 py-3 text-lg font-semibold ${
+                  isLoadingMore ? 'opacity-75 cursor-not-allowed' : ''
+                }`}
+              >
+                {isLoadingMore ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-5 h-5" />
+                    Load More Projects
+                  </>
+                )}
+              </button>
+            ) : (
+              <button
+                onClick={handleShowLess}
+                className="btn-secondary inline-flex items-center gap-2 px-6 py-3 text-lg font-semibold"
+              >
+                <Eye className="w-5 h-5" />
+                Show Less
+              </button>
+            )}
+          </motion.div>
+        )}
+
+        {/* View More on GitHub */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
           viewport={{ once: true }}
-          className="text-center mt-12"
+          className="text-center mt-8"
         >
           <a
             href="https://github.com/chanadinh"

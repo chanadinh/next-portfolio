@@ -24,6 +24,70 @@ interface Skill {
 export default function Skills() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(3);
+  const [showLoadMore, setShowLoadMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const handleLoadMore = () => {
+    setIsLoadingMore(true);
+    
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+      const previousCount = visibleCount;
+      setVisibleCount(prev => Math.min(prev + 2, skillCategories.length));
+      setIsLoadingMore(false);
+      
+      // Smooth scroll to show newly loaded skills
+      setTimeout(() => {
+        // Find the first newly loaded skill category
+        const skillElements = document.querySelectorAll('#skills .card');
+        if (skillElements.length > 0) {
+          // Scroll to the first newly loaded skill category (previous count)
+          const targetSkill = skillElements[previousCount];
+          if (targetSkill) {
+            targetSkill.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center' // Center the new skill category in view
+            });
+            
+            // Add highlight effect to newly loaded skill categories
+            const newlyLoadedSkills = Array.from(skillElements).slice(previousCount);
+            newlyLoadedSkills.forEach((skill, index) => {
+              // Add highlight ring
+              skill.classList.add('ring-4', 'ring-primary/30', 'ring-offset-2');
+              
+              // Add subtle bounce effect
+              const skillElement = skill as HTMLElement;
+              skillElement.style.transform = 'scale(1.02)';
+              setTimeout(() => {
+                skillElement.style.transform = 'scale(1)';
+              }, 300);
+              
+              // Remove highlight after 2 seconds
+              setTimeout(() => {
+                skill.classList.remove('ring-4', 'ring-primary/30', 'ring-offset-2');
+              }, 2000 + (index * 200)); // Staggered removal for visual effect
+            });
+          }
+        }
+      }, 100);
+    }, 500);
+  };
+
+  const handleShowLess = () => {
+    setVisibleCount(3);
+    
+    // Smooth scroll back to top of skills section
+    setTimeout(() => {
+      const skillsSection = document.getElementById('skills');
+      if (skillsSection) {
+        skillsSection.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
+    }, 100);
+  };
 
   useEffect(() => {
     const fetchSkills = async () => {
@@ -32,6 +96,8 @@ export default function Skills() {
         if (response.ok) {
           const data = await response.json();
           setSkills(data);
+          // Show load more button if there are more than 3 skill categories
+          setShowLoadMore(skillCategories.length > 3);
         }
       } catch (error) {
         console.error('Error fetching skills:', error);
@@ -115,15 +181,26 @@ export default function Skills() {
           </p>
         </motion.div>
 
+        {/* Skills Counter */}
+        {showLoadMore && (
+          <div className="text-center mb-6 text-gray-600">
+            Showing {visibleCount} of {skillCategories.length} skill categories
+          </div>
+        )}
+
         <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-8">
-          {skillCategories.map((category, categoryIndex) => (
+          {skillCategories.slice(0, visibleCount).map((category, categoryIndex) => (
             <motion.div
               key={categoryIndex}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ 
+                duration: 0.6, 
+                delay: Math.min(categoryIndex * 0.1, 0.5), // Cap delay for smooth loading
+                scale: { duration: 0.4, ease: "easeOut" }
+              }}
               viewport={{ once: true }}
-              className="card p-6"
+              className="card p-6 transition-all duration-300 ease-out"
             >
               <div className="flex items-center mb-6">
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
@@ -166,6 +243,47 @@ export default function Skills() {
             </motion.div>
           ))}
         </div>
+
+        {/* Load More / Show Less Buttons */}
+        {showLoadMore && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            {visibleCount < skillCategories.length ? (
+              <button
+                onClick={handleLoadMore}
+                disabled={isLoadingMore}
+                className={`btn-primary inline-flex items-center gap-2 px-8 py-3 text-lg font-semibold ${
+                  isLoadingMore ? 'opacity-75 cursor-not-allowed' : ''
+                }`}
+              >
+                {isLoadingMore ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-5 h-5" />
+                    Load More Skills
+                  </>
+                )}
+              </button>
+            ) : (
+              <button
+                onClick={handleShowLess}
+                className="btn-secondary inline-flex items-center gap-2 px-6 py-3 text-lg font-semibold"
+              >
+                <Shield className="w-5 h-5" />
+                Show Less
+              </button>
+            )}
+          </motion.div>
+        )}
 
         {/* Additional Skills Section */}
         <motion.div
