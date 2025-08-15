@@ -605,71 +605,108 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       <div className="pt-20">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="bg-white rounded-lg shadow-lg p-6"
+            className="bg-white rounded-lg shadow-lg p-4 sm:p-6"
           >
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Portfolio Admin</h1>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Portfolio Admin</h1>
             <button
               onClick={() => {
                 localStorage.removeItem('adminToken');
                 window.location.href = '/login';
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200"
             >
               <LogOut className="w-4 h-4" />
               Logout
             </button>
           </div>
           
-          {/* Navigation Tabs */}
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8">
-            {(['projects', 'skills', 'personal-info', 'analytics', 'messages'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                  activeTab === tab
-                    ? 'bg-white text-primary shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                {tab === 'analytics' ? (
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4" />
-                    Analytics
-                  </div>
-                ) : tab === 'messages' ? (
-                  <div className="flex items-center gap-2">
-                    <MessageCircle className="w-4 h-4" />
-                    Messages
-                  </div>
-                ) : tab === 'personal-info' ? (
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    Personal Info
-                  </div>
-                ) : (
-                  tab.charAt(0).toUpperCase() + tab.slice(1)
-                )}
-              </button>
-            ))}
+          {/* Navigation Tabs - Mobile Responsive */}
+          <div className="mb-8">
+            {/* Mobile: Vertical Stack */}
+            <div className="md:hidden space-y-2">
+              {(['projects', 'skills', 'personal-info', 'analytics', 'messages'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`w-full px-4 py-3 rounded-lg font-medium transition-colors text-left ${
+                    activeTab === tab
+                      ? 'bg-primary text-white shadow-sm'
+                      : 'bg-gray-100 text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  {tab === 'analytics' ? (
+                    <div className="flex items-center gap-2">
+                      <BarChart3 className="w-4 h-4" />
+                      Analytics
+                    </div>
+                  ) : tab === 'messages' ? (
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="w-4 h-4" />
+                      Messages
+                    </div>
+                  ) : tab === 'personal-info' ? (
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      Personal Info
+                    </div>
+                  ) : (
+                    tab.charAt(0).toUpperCase() + tab.slice(1)
+                  )}
+                </button>
+              ))}
+            </div>
+            
+            {/* Desktop: Horizontal Tabs */}
+            <div className="hidden md:flex space-x-1 bg-gray-100 p-1 rounded-lg">
+              {(['projects', 'skills', 'personal-info', 'analytics', 'messages'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                    activeTab === tab
+                      ? 'bg-white text-primary shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  {tab === 'analytics' ? (
+                    <div className="flex items-center gap-2">
+                      <BarChart3 className="w-4 h-4" />
+                      Analytics
+                    </div>
+                  ) : tab === 'messages' ? (
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="w-4 h-4" />
+                      Messages
+                    </div>
+                  ) : tab === 'personal-info' ? (
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      Personal Info
+                    </div>
+                  ) : (
+                    tab.charAt(0).toUpperCase() + tab.slice(1)
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Content Sections */}
           {activeTab === 'projects' && (
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900">Projects</h2>
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-500">{projects.length} projects</span>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Projects</h2>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                  <span className="text-sm text-gray-500 text-center sm:text-left">{projects.length} projects</span>
                   <button
                     onClick={() => setShowAddProject(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition-colors duration-200"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition-colors duration-200"
                   >
                     <Plus className="w-4 h-4" />
                     Add Project
@@ -679,18 +716,18 @@ export default function AdminPage() {
               <div className="space-y-4">
                 {projects.map((project) => (
                   <div key={project._id} className="border border-gray-200 rounded-lg p-4">
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
                       {project.imageUrl && (
-                        <div className="flex-shrink-0">
+                        <div className="flex-shrink-0 flex justify-center sm:justify-start">
                           <img 
                             src={project.imageUrl}
                             alt={project.title}
-                            className="w-24 h-24 object-cover rounded-lg border"
+                            className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg border"
                           />
                         </div>
                       )}
                       <div className="flex-1">
-                        <div className="flex justify-between items-start">
+                        <div className="flex flex-col sm:flex-row justify-between items-start gap-3">
                           <div className="flex-1">
                             <h3 className="text-lg font-semibold text-gray-900">{project.title}</h3>
                             <p className="text-gray-600 text-sm mt-1">{project.description}</p>
@@ -701,12 +738,12 @@ export default function AdminPage() {
                                 </span>
                               ))}
                             </div>
-                            <div className="flex gap-4 mt-2 text-xs text-gray-500">
+                            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-2 text-xs text-gray-500">
                               {project.githubUrl && <span>GitHub: {project.githubUrl}</span>}
                               {project.liveUrl && <span>Live: {project.liveUrl}</span>}
                             </div>
                           </div>
-                          <div className="flex items-center space-x-2 ml-4">
+                          <div className="flex items-center space-x-2 w-full sm:w-auto justify-center sm:justify-end">
                             {project.featured && (
                               <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
                                 Featured
@@ -740,20 +777,20 @@ export default function AdminPage() {
 
           {activeTab === 'skills' && (
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900">Skills</h2>
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-500">{skills.length} skills</span>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Skills</h2>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                  <span className="text-sm text-gray-500 text-center sm:text-left">{skills.length} skills</span>
                   <button
                     onClick={() => setShowAddSkill(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition-colors duration-200"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition-colors duration-200"
                   >
                     <Plus className="w-4 h-4" />
                     Add Skill
                   </button>
                 </div>
               </div>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {skills.map((skill) => (
                   <div key={skill._id} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex justify-between items-center">
@@ -798,26 +835,26 @@ export default function AdminPage() {
 
           {activeTab === 'personal-info' && (
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900">Personal Information</h2>
-                                  <button
-                    onClick={() => {
-                      if (personalInfo) {
-                        setEditingPersonalInfo(personalInfo);
-                      } else {
-                        setEditingPersonalInfo(null);
-                      }
-                      setShowEditPersonalInfo(true);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition-colors duration-200"
-                  >
-                    <Edit className="w-4 h-4" />
-                    {personalInfo ? 'Edit Personal Info' : 'Add Personal Info'}
-                  </button>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Personal Information</h2>
+                <button
+                  onClick={() => {
+                    if (personalInfo) {
+                      setEditingPersonalInfo(personalInfo);
+                    } else {
+                      setEditingPersonalInfo(null);
+                    }
+                    setShowEditPersonalInfo(true);
+                  }}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition-colors duration-200"
+                >
+                  <Edit className="w-4 h-4" />
+                  {personalInfo ? 'Edit Personal Info' : 'Add Personal Info'}
+                </button>
               </div>
               
               {personalInfo ? (
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <div className="border border-gray-200 rounded-lg p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                       🎯 Hobbies
@@ -958,14 +995,14 @@ export default function AdminPage() {
           )}
 
           {activeTab === 'analytics' && (
-            <div className="space-y-8">
+            <div className="space-y-6 md:space-y-8">
               <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-6">General Analytics</h2>
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 md:mb-6">General Analytics</h2>
                 <AnalyticsDashboard />
               </div>
               
               <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-6">Chat Analytics</h2>
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 md:mb-6">Chat Analytics</h2>
                 <ChatAnalytics />
               </div>
             </div>
@@ -973,13 +1010,13 @@ export default function AdminPage() {
 
           {activeTab === 'messages' && (
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900">Contact Messages</h2>
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-500">{messages.length} messages</span>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Contact Messages</h2>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                  <span className="text-sm text-gray-500 text-center sm:text-left">{messages.length} messages</span>
                   <button
                     onClick={() => fetchData()}
-                    className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2"
+                    className="w-full sm:w-auto px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -998,15 +1035,15 @@ export default function AdminPage() {
               ) : (
                 <div className="space-y-4">
                   {messages.map((message) => (
-                    <div key={message._id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h3 className="text-xl font-semibold text-gray-900">{message.subject}</h3>
+                    <div key={message._id} className="border border-gray-200 rounded-lg p-4 md:p-6 hover:shadow-md transition-shadow duration-200">
+                      <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-lg md:text-xl font-semibold text-gray-900">{message.subject}</h3>
                           <p className="text-gray-600 mt-1">
                             From: <span className="font-medium">{message.name}</span> ({message.email})
                           </p>
                         </div>
-                        <div className="text-right">
+                        <div className="text-left sm:text-right w-full sm:w-auto">
                           <p className="text-xs text-gray-500">
                             {new Date(message.createdAt).toLocaleDateString()}
                           </p>
@@ -1016,12 +1053,12 @@ export default function AdminPage() {
                         </div>
                       </div>
                       
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <p className="text-gray-700 whitespace-pre-wrap">{message.message}</p>
+                      <div className="bg-gray-50 rounded-lg p-3 md:p-4">
+                        <p className="text-gray-700 whitespace-pre-wrap text-sm md:text-base">{message.message}</p>
                       </div>
                       
                       <div className="mt-4 pt-4 border-t border-gray-200">
-                        <div className="flex justify-between items-center text-xs text-gray-500">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs text-gray-500">
                           <span>Message ID: {message._id}</span>
                           <span>Last updated: {new Date(message.updatedAt).toLocaleString()}</span>
                         </div>
@@ -1037,16 +1074,16 @@ export default function AdminPage() {
 
       {/* Add Project Modal */}
       {showAddProject && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
           >
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h3 className="text-xl font-semibold">Add New Project</h3>
-                <p className="text-sm text-gray-600 mt-1">Step 1: Upload image to R2 • Step 2: Create project</p>
+            <div className="flex justify-between items-start sm:items-center mb-6">
+              <div className="flex-1">
+                <h3 className="text-lg sm:text-xl font-semibold">Add New Project</h3>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">Step 1: Upload image to R2 • Step 2: Create project</p>
               </div>
               <button
                 onClick={() => setShowAddProject(false)}
@@ -1232,16 +1269,16 @@ export default function AdminPage() {
 
       {/* Edit Project Modal */}
       {showEditProject && editingProject && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
           >
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h3 className="text-xl font-semibold">Edit Project</h3>
-                <p className="text-sm text-gray-600 mt-1">Step 1: Upload new image (optional) • Step 2: Save changes</p>
+            <div className="flex justify-between items-start sm:items-center mb-6">
+              <div className="flex-1">
+                <h3 className="text-lg sm:text-xl font-semibold">Edit Project</h3>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">Step 1: Upload new image (optional) • Step 2: Save changes</p>
               </div>
               <button
                 onClick={() => setShowEditProject(false)}
@@ -1434,11 +1471,11 @@ export default function AdminPage() {
 
       {/* Add Skill Modal */}
       {showAddSkill && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg p-6 w-full max-w-md"
+            className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md"
           >
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-semibold">Add New Skill</h3>
@@ -1524,11 +1561,11 @@ export default function AdminPage() {
 
       {/* Edit Skill Modal */}
       {showEditSkill && editingSkill && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg p-6 w-full max-w-md"
+            className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md"
           >
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-semibold">Edit Skill</h3>
@@ -1612,18 +1649,18 @@ export default function AdminPage() {
 
       {/* Edit Personal Info Modal */}
       {showEditPersonalInfo && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
           >
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h3 className="text-xl font-semibold">
+            <div className="flex justify-between items-start sm:items-center mb-6">
+              <div className="flex-1">
+                <h3 className="text-lg sm:text-xl font-semibold">
                   {editingPersonalInfo ? 'Edit Personal Information' : 'Add Personal Information'}
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">Manage your hobbies, favorite anime, shows, and more!</p>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">Manage your hobbies, favorite anime, shows, and more!</p>
               </div>
               <button
                 onClick={() => {
@@ -1645,7 +1682,7 @@ export default function AdminPage() {
               </button>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {/* Hobbies */}
               <div className="space-y-3">
                 <h4 className="font-medium text-gray-900">🎯 Hobbies</h4>
@@ -1869,7 +1906,7 @@ export default function AdminPage() {
               </div>
 
               {/* Other Interests */}
-              <div className="space-y-3 md:col-span-2">
+              <div className="space-y-3 col-span-1 md:col-span-2">
                 <h4 className="font-medium text-gray-900">🌟 Other Interests</h4>
                 <div className="flex gap-2">
                   <input

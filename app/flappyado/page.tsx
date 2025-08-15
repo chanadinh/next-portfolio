@@ -113,6 +113,7 @@ export default function FlappyAdo() {
   const [lastClickTime, setLastClickTime] = useState<number>(0)
   const [isMusicPlaying, setIsMusicPlaying] = useState<boolean>(false)
   const [showDashboard, setShowDashboard] = useState<boolean>(false)
+  const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false)
 
   // Initialize audio context and background music
   useEffect(() => {
@@ -561,6 +562,12 @@ export default function FlappyAdo() {
       if (e.code === 'KeyD' && gameState.isPlaying) {
         e.preventDefault()
         setShowDashboard(prev => !prev)
+      }
+      
+      // Toggle leaderboard with 'L' key (when not playing)
+      if (e.code === 'KeyL' && !gameState.isPlaying) {
+        e.preventDefault()
+        setShowLeaderboard(prev => !prev)
       }
     }
 
@@ -1119,33 +1126,48 @@ export default function FlappyAdo() {
 
 
 
-      {/* Top Scores Display */}
-      {!gameState.isPlaying && !gameState.gameOver && topScores.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="absolute bottom-8 right-8 bg-white bg-opacity-90 p-4 rounded-lg shadow-lg border border-gray-200 max-w-xs"
-          style={{ fontFamily: '"Comic Neue", cursive' }}
-        >
-          <h3 className="text-lg font-bold text-gray-800 mb-3">🏆 Top 10 Scores</h3>
-          <div className="space-y-2 max-h-64 overflow-y-auto">
-            {topScores.slice(0, 10).map((score, index) => (
-              <div 
-                key={score._id} 
-                className={`flex justify-between items-center text-sm p-1 rounded ${
-                  hasPlayedBefore && score.userIP === userIP ? 'bg-blue-100 border-l-2 border-blue-500' : ''
-                }`}
-              >
-                <span className="font-medium text-gray-600">
-                  {index + 1}. {score.name}
-                  {hasPlayedBefore && score.userIP === userIP && ' (You)'}
-                </span>
-                <span className="font-bold text-blue-600">{score.score}</span>
+      {/* Top Scores Display - Toggleable */}
+      {!gameState.isPlaying && !gameState.gameOver && (
+        <div className="absolute bottom-8 right-8">
+          {/* Leaderboard Toggle Button */}
+          <button
+            onClick={() => setShowLeaderboard(prev => !prev)}
+            className="mb-2 px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded-full shadow-lg transition-all duration-200 flex items-center gap-2"
+            style={{ fontFamily: '"Sniglet", cursive' }}
+            title="Press 'L' key to toggle leaderboard"
+          >
+            {showLeaderboard ? '🏆 Hide Leaderboard' : '🏆 Show Leaderboard'}
+          </button>
+          
+          {/* Leaderboard Content */}
+          {showLeaderboard && topScores.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 200 }}
+              className="bg-white bg-opacity-90 p-4 rounded-lg shadow-lg border border-gray-200 max-w-xs"
+              style={{ fontFamily: '"Comic Neue", cursive' }}
+            >
+              <h3 className="text-lg font-bold text-gray-800 mb-3">🏆 Top 10 Scores</h3>
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {topScores.slice(0, 10).map((score, index) => (
+                  <div 
+                    key={score._id} 
+                    className={`flex justify-between items-center text-sm p-1 rounded ${
+                      hasPlayedBefore && score.userIP === userIP ? 'bg-blue-100 border-l-2 border-blue-500' : ''
+                    }`}
+                  >
+                    <span className="font-medium text-gray-600">
+                      {index + 1}. {score.name}
+                      {hasPlayedBefore && score.userIP === userIP && ' (You)'}
+                    </span>
+                    <span className="font-bold text-blue-600">{score.score}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </motion.div>
+            </motion.div>
+          )}
+        </div>
       )}
 
       {/* Floating Score Display - Always Visible */}
