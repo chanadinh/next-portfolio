@@ -112,22 +112,7 @@ export default function About() {
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          viewport={{ once: true }}
-          className="mt-16 text-center"
-        >
-          <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold mb-4 text-gray-800">My Mission</h3>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              To leverage cutting-edge AI and machine learning technologies to solve real-world problems, 
-              create innovative solutions, and contribute to the advancement of intelligent systems that 
-              make a positive impact on people's lives.
-            </p>
-          </div>
-        </motion.div>
+
       </div>
     </section>
   )

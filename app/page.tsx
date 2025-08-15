@@ -12,13 +12,13 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Navigation />
+      <ChatBubble />
       <Hero />
       <About />
       <Projects />
       <Skills />
       <Contact />
       <Footer />
-      <ChatBubble />
     </main>
   )
 }

@@ -117,7 +117,7 @@ export default function ChatBubble() {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        className="fixed bottom-6 right-6 z-50"
+        className="fixed top-24 right-6 z-50"
       >
         <button
           onClick={toggleChat}
@@ -135,7 +135,7 @@ export default function ChatBubble() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed bottom-24 right-6 z-50 w-96 max-h-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
+            className="fixed top-32 right-6 z-50 w-96 max-h-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
           >
             {/* Chat Header */}
             <div className="bg-gradient-to-r from-black to-gray-700 p-4 text-white">
