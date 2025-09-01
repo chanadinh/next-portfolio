@@ -4,14 +4,15 @@ import { ObjectId } from 'mongodb';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { db } = await connectToDatabase();
     const body = await request.json();
+    const { id } = await params;
     
     // Validate ID
-    if (!ObjectId.isValid(params.id)) {
+    if (!ObjectId.isValid(id)) {
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 });
     }
     
@@ -29,7 +30,7 @@ export async function PUT(
     };
     
     const result = await db.collection('personalInfo').updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: updateData }
     );
     
@@ -38,7 +39,7 @@ export async function PUT(
     }
     
     return NextResponse.json({
-      _id: params.id,
+      _id: id,
       ...updateData
     });
   } catch (error) {
@@ -49,18 +50,19 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { db } = await connectToDatabase();
+    const { id } = await params;
     
     // Validate ID
-    if (!ObjectId.isValid(params.id)) {
+    if (!ObjectId.isValid(id)) {
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 });
     }
     
     const result = await db.collection('personalInfo').deleteOne({
-      _id: new ObjectId(params.id)
+      _id: new ObjectId(id)
     });
     
     if (result.deletedCount === 0) {
