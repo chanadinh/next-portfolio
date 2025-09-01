@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Menu, X, User, Code, Briefcase, MessageCircle, Calculator, Settings, Gamepad2 } from 'lucide-react'
+import { Menu, X, User, Code, Briefcase, MessageCircle, Newspaper } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -20,17 +20,13 @@ function Navigation() {
   const navItems = isHomePage ? [
     // Home page navigation - full portfolio sections
     { name: 'About', href: '#about', icon: User },
+    { name: 'Updates', href: '#updates', icon: Newspaper },
     { name: 'Projects', href: '#projects', icon: Briefcase },
     { name: 'Skills', href: '#skills', icon: Code },
     { name: 'Contact', href: '#contact', icon: MessageCircle },
-    { name: 'Graphing Calculator', href: '/graph', icon: Calculator },
-    { name: 'Flappy Ado', href: '/flappyado', icon: Gamepad2 },
-    { name: 'Admin', href: '/login', icon: Settings },
   ] : [
     // Other pages navigation - only utility pages
-    { name: 'Graphing Calculator', href: '/graph', icon: Calculator },
-    { name: 'Flappy Ado', href: '/flappyado', icon: Gamepad2 },
-    { name: 'Admin', href: '/login', icon: Settings },
+    // Utility pages are now hidden from navigation
   ]
 
   useEffect(() => {

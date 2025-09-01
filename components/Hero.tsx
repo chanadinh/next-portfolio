@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Download, ArrowRight, Github, Linkedin, Mail } from 'lucide-react'
+import { Github, Linkedin, Mail } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -79,22 +79,7 @@ export default function Hero() {
             Passionate about building intelligent applications and pushing the boundaries of what's possible with AI and machine learning.
           </motion.p>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
-          >
-            <Link href="/Chan Dinh Resume April 2025.pdf" className="btn-primary flex items-center gap-2">
-              <Download className="w-5 h-5" />
-              Download Resume
-            </Link>
-            <Link href="#projects" className="btn-secondary flex items-center gap-2">
-              View Projects
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </motion.div>
+
 
           {/* Social Links */}
           <motion.div

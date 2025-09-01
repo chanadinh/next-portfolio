@@ -202,7 +202,7 @@ When appropriate, you can:
     // Log chat activity for monitoring
     console.log(`💬 Chat saved - Session: ${chatData.sessionId}, IP: ${clientIP}, Messages: ${chatData.messages.length}`)
 
-    return NextResponse.json({ 
+    return NextResponse.json({  
       message: assistantMessage,
       sessionId: chatData.sessionId
     })
