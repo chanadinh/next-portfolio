@@ -1,3 +1,4 @@
+import { requireAdmin } from '../../../../lib/admin-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '../../../../lib/mongodb';
 import { ObjectId } from 'mongodb';
@@ -6,6 +7,8 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     const { db } = await connectToDatabase();
     const body = await request.json();
@@ -52,6 +55,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     const { db } = await connectToDatabase();
     const { id } = await params;

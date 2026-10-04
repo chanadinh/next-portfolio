@@ -1,6 +1,9 @@
+import { requireAdmin } from '../../../lib/admin-auth';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     const { timeRange } = await request.json();
     
@@ -63,7 +66,9 @@ async function fetchVercelAnalytics(timeRange: string) {
 }
 
 // GET method for testing
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   return NextResponse.json({
     message: 'Analytics API endpoint is working',
     status: 'ready',

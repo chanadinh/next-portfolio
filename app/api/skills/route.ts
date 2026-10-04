@@ -1,3 +1,4 @@
+import { requireAdmin } from '../../../lib/admin-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '../../../lib/mongodb';
 import Skill from '../../../models/Skill';
@@ -17,6 +18,8 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     await connectDB();
     const body = await request.json();
@@ -47,6 +50,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     await connectDB();
     const body = await request.json();
@@ -82,6 +87,8 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     await connectDB();
     const { searchParams } = new URL(request.url);

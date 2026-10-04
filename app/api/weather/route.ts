@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
 
     const response = await fetch(apiUrl, {
       headers: {
-        'User-Agent': 'WeatherApp/1.0 (https://chandinh.org)',
+        'User-Agent': 'WeatherApp/1.0 (https://chandinh.dev)',
         'Accept': 'application/geo+json'
       }
     });

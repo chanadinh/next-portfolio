@@ -66,8 +66,8 @@ export default function Contact() {
     {
       icon: Mail,
       title: 'Email',
-              value: 'contact@chandinh.org',
-        link: 'mailto:contact@chandinh.org'
+              value: 'chandinh.jobs@gmail.com',
+        link: 'mailto:chandinh.jobs@gmail.com'
     },
     {
       icon: Phone,
@@ -99,7 +99,7 @@ export default function Contact() {
     {
       icon: Globe,
       name: 'Website',
-      url: 'https://chandinh.org',
+      url: 'https://chandinh.dev',
       color: 'hover:bg-primary hover:text-white'
     }
   ]
