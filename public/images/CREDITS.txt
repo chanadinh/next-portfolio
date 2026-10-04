@@ -1,0 +1,28 @@
+Portfolio image sources — October 4, 2026
+
+Avatar: public/images/chan-editorial.png
+Edited from Chan's existing public/images/ava.jpeg with the built-in image_gen tool.
+Original retained. Generated output copied into the project and outputs/chan-editorial.png.
+The website applies grayscale using CSS and serves responsive images through Next.js.
+Final prompt:
+Use case: identity-preserve.
+Asset type: editorial portrait for Chan Dinh's personal AI/software/cybersecurity portfolio.
+Edit target: the supplied existing professional headshot, not a new person.
+Primary request: make this photo fit an asphalt, ivory, and vermilion editorial website. Replace the distracting office/flag background with a seamless matte charcoal #101214 studio background; give the existing photo a refined neutral monochrome photographic grade and soft natural contrast.
+Composition: vertical 4:5, head and upper torso, head fully visible with modest headroom, shoulders natural; suitable at 260px wide. Keep him facing the camera with the same relaxed expression. Preserve his exact facial identity, face proportions, hair, black rectangular glasses, skin texture, smile, age, black blazer and white open-collar shirt, and original pose. No beautification, facial reshaping, new accessories, text, badges, patterns, halos, or racing props. Retain believable photographic lighting and crisp natural detail. Background opaque.
+
+Escape Room: public/images/projects/escape-room-event.png
+Chan's photo attached in this conversation, October 4, 2026. Copied without altering its pixels.
+Shows the Mission Success display and physical puzzle controls.
+Project: https://github.com/chanadinh/Escape-Room
+
+Paemon companion: public/images/projects/paemon-companion.png
+Paemon questionnaire: public/images/projects/paemon-questionnaire.png
+Original team screenshots downloaded unchanged from the team's Devpost submission.
+https://devpost.com/software/name-5ftgnj
+https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/003/216/889/datas/original.png
+https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/003/216/869/datas/original.png
+Team credited by Devpost: Hannah Rauch, Phil-Ho Combatir, noor sahel, Chan Dinh.
+The site captions link back to the team submission.
+These are authentic project screenshots, not images generated for this portfolio.
+
