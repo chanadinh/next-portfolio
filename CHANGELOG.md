@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/chanadinh/next-portfolio/compare/v1.1.0...v1.2.0) (2026-10-04)
+
+
+### Features
+
+* **portfolio:** refresh portrait and add project photos ([4c4fd4e](https://github.com/chanadinh/next-portfolio/commit/4c4fd4ee547d2216fed725158c04ad8b48bcb12b))
+
 # [1.1.0](https://github.com/chanadinh/next-portfolio/compare/v1.0.0...v1.1.0) (2026-10-04)
 
 
