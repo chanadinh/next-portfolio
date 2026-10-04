@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowDown, ArrowUpRight, Flag, MoveRight } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, Flag } from 'lucide-react';
 import { portfolio } from '../../content/portfolio';
 import { story } from '../../content/story';
 import { displayFont, labelFont } from '../../lib/portfolio-fonts';
@@ -26,7 +26,7 @@ export default function Portfolio() {
             <div><p className={styles.overline}>The person behind the projects</p><h2 className={styles.heroHeading}>Driven by<br /><em>curiosity.</em></h2><p className={styles.heroCopy}>{story.introduction}</p>
               <div className={styles.actions}><a href="#work" className={styles.solidButton}>Explore my work <ArrowUpRight size={18} aria-hidden="true" /></a><a href="#story" className={styles.plainLink}>Read the story <ArrowDown size={17} aria-hidden="true" /></a></div>
             </div>
-            <figure className={styles.portraitStage}><div className={styles.speedLines} aria-hidden="true"><i /><i /><i /></div><div className={styles.portraitFrame}><Image src="/images/ava.jpeg" alt="Chan Dinh" width={300} height={350} sizes="(max-width: 600px) 200px, 260px" priority /><span className={styles.portraitCorner} aria-hidden="true">CD / 01</span></div><figcaption>CS at UCF<br />Cybersecurity team at Siemens Energy<br />F1 enthusiast, through and through.</figcaption></figure>
+            <figure className={styles.portraitStage}><div className={styles.speedLines} aria-hidden="true"><i /><i /><i /></div><div className={styles.portraitFrame}><Image src="/images/chan-editorial.png" alt="Chan Dinh" width={1122} height={1402} sizes="(max-width: 360px) 140px, (max-width: 680px) 160px, (max-width: 950px) 220px, 260px" priority /><span className={styles.portraitCorner} aria-hidden="true">CD / 01</span></div><figcaption>CS at UCF<br />Cybersecurity team at Siemens Energy<br />F1 enthusiast, through and through.</figcaption></figure>
           </div>
           <div className={styles.heroBottom}><span>From mathematics to systems.<br />From ideas to things people use.</span><a href="#story" aria-label="Continue to the first chapter"><ArrowDown size={22} aria-hidden="true" /></a><span>Scroll to follow the story<br /><span className={styles.accent}>01 — 04</span></span></div>
         </div>
@@ -53,12 +53,14 @@ export default function Portfolio() {
       <section id="work" className={`${styles.lightSection} ${styles.section}`} aria-labelledby="work-title">
         <div className={styles.container}><Chapter number="03">Put it in people’s hands.</Chapter><div className={styles.sectionIntro}><h2 id="work-title" className={styles.sectionHeading}>Made to work.<br /><em>Made to be used.</em></h2><p>Alongside my internship work, I build projects that connect people, interfaces, and the systems behind them.</p></div>
           <div className={styles.projectStories}>{story.projects.map(project => <article id={project.id} className={styles.projectStory} key={project.id}>
-            <div className={`${styles.projectVisual} ${project.id === 'paemon' ? styles.paemonVisual : styles.escapeVisual}`} aria-label={project.id === 'paemon' ? 'Concept illustration: conversation, image, and audio connected in one experience' : 'Concept illustration: scan, synchronize, and solve'}>
-              <span className={styles.label}>Concept study / {project.index}</span>
-              {project.id === 'escape-room' ? <div className={styles.checkpoints}><span>SCAN</span><MoveRight aria-hidden="true" /><span>SYNC</span><MoveRight aria-hidden="true" /><span>SOLVE</span></div> : <div className={styles.companion}><span>Conversation</span><span>Image</span><span>Audio</span><div aria-hidden="true">P<span>↗</span></div></div>}
-              <span className={styles.visualName}>{project.name}</span>
-            </div>
-            <div className={styles.projectStoryCopy}><div className={styles.projectMeta}><span>{project.name}</span><span>{project.date}</span></div><h3>{project.title}</h3><p>{project.summary}</p><details><summary>Inside the build <span aria-hidden="true">+</span></summary><p>{project.contribution}</p><ul className={styles.tags} aria-label="Project technologies">{project.tools.map(tool => <li key={tool}>{tool}</li>)}</ul></details><p className={styles.evidence}>{project.evidence}</p></div>
+            <figure className={styles.projectVisual}>
+              <a className={styles.projectImageFrame} href={project.images[0].src} target="_blank" rel="noopener noreferrer" aria-label={`View ${project.name} image at full size (opens a new tab)`}>
+                <Image src={project.images[0].src} alt={project.images[0].alt} width={project.images[0].width} height={project.images[0].height} sizes="(max-width: 680px) calc(100vw - 44px), (max-width: 1240px) 46vw, 558px" />
+                <span className={styles.imageExpand} aria-hidden="true"><ArrowUpRight size={16} /></span>
+              </a>
+              <figcaption className={styles.projectCaption}><span className={styles.label}>{project.index} / {project.images[0].caption}</span><a href={project.source.href} target="_blank" rel="noopener noreferrer">{project.source.label} <ArrowUpRight size={13} aria-hidden="true" /></a></figcaption>
+            </figure>
+            <div className={styles.projectStoryCopy}><div className={styles.projectMeta}><span>{project.name}</span><span>{project.date}</span></div><h3>{project.title}</h3><p>{project.summary}</p><details><summary>Inside the build <span aria-hidden="true">+</span></summary><p>{project.contribution}</p><ul className={styles.tags} aria-label="Project technologies">{project.tools.map(tool => <li key={tool}>{tool}</li>)}</ul>{project.images.slice(1).map(photo => <figure className={styles.projectDetailPhoto} key={photo.src}><a href={photo.src} target="_blank" rel="noopener noreferrer" aria-label={`View ${photo.caption.toLowerCase()} at full size (opens a new tab)`}><Image src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} sizes="(max-width: 680px) calc(100vw - 44px), 46vw" /></a><figcaption>{photo.caption}</figcaption></figure>)}</details><p className={styles.evidence}>{project.evidence}</p></div>
           </article>)}</div>
           <ProjectLibrary />
           <details className={styles.toolbox}><summary>The tools behind the work <span aria-hidden="true">+</span></summary><dl>{story.toolkit.map(item => <div key={item.name}><dt>{item.name}</dt><dd>{item.tools}</dd></div>)}</dl></details>
