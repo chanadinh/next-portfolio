@@ -93,7 +93,7 @@ export default function Contact() {
     {
       icon: Linkedin,
       name: 'LinkedIn',
-      url: 'https://linkedin.com/in/chandinh',
+      url: '/linkedin',
       color: 'hover:bg-blue-600 hover:text-white'
     },
     {

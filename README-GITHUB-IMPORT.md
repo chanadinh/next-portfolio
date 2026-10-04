@@ -39,6 +39,23 @@ Open `/login`, sign in, then use the Projects tab. Login fails closed when crede
 
 Manually created employer case studies remain supported. Delete removes the portfolio entry only; it does not alter GitHub repositories or shared image assets.
 
+## Profile settings
+
+Open **Profile** in the signed-in dashboard to:
+
+- Upload a PDF résumé (up to 3 MB), preview the selected file, and open the current résumé.
+- Save your LinkedIn `/in/...` profile URL. The dashboard normalizes it to HTTPS and removes tracking parameters.
+
+These controls use the existing `MONGODB_URI` and admin session. Résumé bytes and metadata are saved atomically in one singleton profile document; résumé storage does not require R2. An invalid or failed upload preserves the current file. Only résumé downloads read the PDF bytes; the settings API returns metadata. Updating the résumé does not rewrite the homepage story or project text.
+
+Public résumé links use `/resume`, and LinkedIn links use `/linkedin`. Both resolve the latest saved setting on each visit with `Cache-Control: no-store`, so no rebuild is needed after saving. Before the first upload, `/resume` redirects to the bundled July 2026 `/resume.pdf`. Before the first LinkedIn edit, `/linkedin` uses the existing profile. If MongoDB is not configured, those public defaults still work; the dashboard reports that storage is unavailable. A configured but unreachable database returns a temporary error instead of silently serving an older résumé.
+
+- `GET /api/admin/profile`: authenticated settings and résumé metadata.
+- `PATCH /api/admin/profile`: authenticated `{ "linkedinUrl": "https://www.linkedin.com/in/your-name" }`.
+- `POST /api/admin/profile/resume`: authenticated multipart upload with one `file` field. The server bounds the request body, checks the PDF header/end marker and size, and rejects cross-origin writes.
+
+The editable favicon source is `public/favicon.svg`. Run `node scripts/generate-favicon.cjs` to regenerate the PNG, multi-size ICO, Apple touch, and Windows tile icons. Metadata references the new assets with a version query to refresh previously cached browser icons.
+
 ## Data and visibility
 
 `Project` adds `status` (`draft`, `published`, `hidden`), `placement` (`work`, `playground`), `role`, `technicalDecisions`, `outcomes`, `githubRepoId`, and `github` (a metadata/README snapshot).

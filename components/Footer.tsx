@@ -80,7 +80,7 @@ export default function Footer() {
                 <Github className="w-5 h-5" />
               </a>
               <a
-                href="https://linkedin.com/in/chandinh"
+                href="/linkedin"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors duration-300 transform hover:scale-110"

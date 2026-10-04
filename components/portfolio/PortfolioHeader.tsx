@@ -8,6 +8,6 @@ export default function PortfolioHeader() {
     <nav aria-label="Portfolio navigation" className={styles.navigation}>
       <Link href="/#story">The story</Link><Link href="/#work">Selected work</Link><Link href="/#off-duty">Off duty</Link>
     </nav>
-    <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className={styles.resumeLink}>Résumé <ArrowUpRight size={14} aria-hidden="true" /></a>
+    <a href="/resume" target="_blank" rel="noopener noreferrer" className={styles.resumeLink}>Résumé <ArrowUpRight size={14} aria-hidden="true" /></a>
   </header>;
 }

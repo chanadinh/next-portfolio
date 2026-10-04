@@ -102,7 +102,7 @@ export default function Hero() {
               <Github className="w-6 h-6" />
             </Link>
             <Link
-              href="https://linkedin.com/in/chandinh"
+              href="/linkedin"
               target="_blank"
               rel="noopener noreferrer"
               className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-300 transform hover:scale-110 backdrop-blur-sm"

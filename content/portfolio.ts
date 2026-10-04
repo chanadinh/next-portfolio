@@ -7,7 +7,7 @@ export const portfolio = {
   about: 'I’m a Computer Science student at the University of Central Florida and an OES CYS Solution Intern at Siemens Energy. My work connects RAG systems, LLM-enabled automation, cybersecurity workflows, and full-stack interfaces. I care about making complex systems understandable and useful to the people working with them.',
   email: 'chandinh.jobs@gmail.com',
   website: 'https://chandinh.dev',
-  resume: '/resume.pdf',
+  resume: '/resume',
   offTheClock: {
     eyebrow: 'Off the clock',
     title: 'Formula 1, all of it.',

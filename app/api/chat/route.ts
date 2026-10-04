@@ -83,7 +83,7 @@ He's passionate about building intelligent applications and pushing the boundari
 Additional context:
 - Location: Casselberry, FL
 - Contact: chandinh.jobs@gmail.com
-- LinkedIn: linkedin.com/in/chandinh
+- LinkedIn: https://chandinh.dev/linkedin
 - GitHub: github.com/chanadinh
 - Website: chandinh.dev`;
 
