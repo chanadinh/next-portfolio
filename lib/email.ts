@@ -161,7 +161,7 @@ I have received your message regarding "${userData.subject}" and I appreciate yo
 I will review your message and get back to you as soon as possible, typically within 24-48 hours.
 
 In the meantime, if you have any urgent questions, feel free to reach out through my other channels:
-- LinkedIn: https://linkedin.com/in/chandinh
+- LinkedIn: https://chandinh.dev/linkedin
 - GitHub: https://github.com/chanadinh
 - Email: chandinh.jobs@gmail.com
 
@@ -353,13 +353,13 @@ This is an automated confirmation message. Please do not reply to this email.
             
             <div class="contact-info">
                 <strong>🔗 Other Ways to Connect:</strong><br><br>
-                • <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/chandinh">linkedin.com/in/chandinh</a><br>
+                • <strong>LinkedIn:</strong> <a href="https://chandinh.dev/linkedin">LinkedIn profile</a><br>
                 • <strong>GitHub:</strong> <a href="https://github.com/chanadinh">github.com/chanadinh</a><br>
                 • <strong>Email:</strong> <a href="mailto:chandinh.jobs@gmail.com">chandinh.jobs@gmail.com</a>
             </div>
             
             <div class="social-links">
-                <a href="https://linkedin.com/in/chandinh">Connect on LinkedIn</a>
+                <a href="https://chandinh.dev/linkedin">Connect on LinkedIn</a>
                 <a href="https://github.com/chanadinh">View GitHub</a>
             </div>
             

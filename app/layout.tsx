@@ -35,16 +35,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/images/logo.png', sizes: '32x32', type: 'image/png' },
-      { url: '/images/logo.png', sizes: '64x64', type: 'image/png' },
-      { url: '/images/logo.png', sizes: '128x128', type: 'image/png' },
-      { url: '/images/logo.png', sizes: '256x256', type: 'image/png' },
+      { url: '/favicon.ico?v=cd1', sizes: '16x16 32x32 48x48' },
+      { url: '/favicon.svg?v=cd1', type: 'image/svg+xml' },
+      { url: '/favicon-32x32.png?v=cd1', sizes: '32x32', type: 'image/png' },
     ],
-    shortcut: '/favicon.ico',
+    shortcut: '/favicon.ico?v=cd1',
     apple: [
-      { url: '/images/logo.png', sizes: '180x180', type: 'image/png' },
-      { url: '/images/logo.png', sizes: '256x256', type: 'image/png' },
+      { url: '/apple-touch-icon.png?v=cd1', sizes: '180x180', type: 'image/png' },
     ],
   },
 }
@@ -57,16 +54,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/images/logo.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/images/logo.png" type="image/png" sizes="64x64" />
-        <link rel="icon" href="/images/logo.png" type="image/png" sizes="128x128" />
-        <link rel="icon" href="/images/logo.png" type="image/png" sizes="256x256" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/images/logo.png" sizes="180x180" />
-        <link rel="apple-touch-icon" href="/images/logo.png" sizes="256x256" />
-        <meta name="msapplication-TileImage" content="/images/logo.png" />
-        <meta name="msapplication-TileColor" content="#000000" />
+        <meta name="msapplication-TileImage" content="/favicon-128x128.png?v=cd1" />
+        <meta name="msapplication-TileColor" content="#101214" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />

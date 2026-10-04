@@ -7,6 +7,7 @@ import AnalyticsDashboard from '../../components/AnalyticsDashboard';
 import ChatAnalytics from '../../components/ChatAnalytics';
 import Navigation from '../../components/Navigation';
 import ProjectManager from '../../components/admin/ProjectManager';
+import ProfileManager from '../../components/admin/ProfileManager';
 
 interface Skill {
   _id: string;
@@ -43,7 +44,7 @@ export default function AdminPage() {
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo | null>(null);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'projects' | 'skills' | 'personal-info' | 'analytics' | 'messages'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'profile' | 'skills' | 'personal-info' | 'analytics' | 'messages'>('projects');
   
   // Skills management states
   const [showAddSkill, setShowAddSkill] = useState(false);
@@ -329,7 +330,7 @@ export default function AdminPage() {
           <div className="mb-8">
             {/* Mobile: Vertical Stack */}
             <div className="md:hidden space-y-2">
-              {(['projects', 'skills', 'personal-info', 'analytics', 'messages'] as const).map((tab) => (
+              {(['projects', 'profile', 'skills', 'personal-info', 'analytics', 'messages'] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -363,7 +364,7 @@ export default function AdminPage() {
             
             {/* Desktop: Horizontal Tabs */}
             <div className="hidden md:flex space-x-1 bg-gray-100 p-1 rounded-lg">
-              {(['projects', 'skills', 'personal-info', 'analytics', 'messages'] as const).map((tab) => (
+              {(['projects', 'profile', 'skills', 'personal-info', 'analytics', 'messages'] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -398,6 +399,7 @@ export default function AdminPage() {
 
           {/* Content Sections */}
           {activeTab === 'projects' && <ProjectManager />}
+          {activeTab === 'profile' && <ProfileManager />}
 
           {activeTab === 'skills' && (
             <div>
