@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/chanadinh/next-portfolio/compare/v1.0.0...v1.1.0) (2026-10-04)
+
+
+### Features
+
+* **portfolio:** redesign site and add curated github imports ([a8f199a](https://github.com/chanadinh/next-portfolio/commit/a8f199aaf4426e7c57c55e290024b8d5fbdde471))
+
 # 1.0.0 (2026-09-19)
 
 
