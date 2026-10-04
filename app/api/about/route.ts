@@ -1,3 +1,4 @@
+import { requireAdmin } from '../../../lib/admin-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '../../../lib/mongodb';
 import About from '../../../models/About';
@@ -17,6 +18,8 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     await connectDB();
     const body = await request.json();

@@ -1,96 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import connectDB from '../../../../lib/mongodb';
 import Project from '../../../../models/Project';
-import { deleteFromS3 } from '../../../../lib/s3';
+import { requireAdmin } from '../../../../lib/admin-auth';
+import { editorialInput, ProjectInputError, publishedFilter, publicProjection } from '../../../../lib/project-editor';
+type Context = { params: Promise<{ id: string }> };
+const missing = () => NextResponse.json({ error: 'Project not found.' }, { status: 404 });
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: Context) {
+  const admin = request.nextUrl.searchParams.get('view') === 'admin';
+  if (admin) { const denied = requireAdmin(request); if (denied) return denied; }
+  const { id } = await params;
+  if (!mongoose.isObjectIdOrHexString(id)) return missing();
   try {
     await connectDB();
-    const { id } = await params;
-    const project = await Project.findById(id);
-    
-    if (!project) {
-      return NextResponse.json(
-        { error: 'Project not found' },
-        { status: 404 }
-      );
-    }
-    
-    return NextResponse.json(project);
-  } catch (error) {
-    console.error('Error fetching project:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch project' },
-      { status: 500 }
-    );
-  }
+    const project = await Project.findOne({ _id: id, ...(admin ? {} : publishedFilter) }).select(admin ? '' : publicProjection).lean();
+    return project ? NextResponse.json(project, { headers: { 'Cache-Control': 'no-store' } }) : missing();
+  } catch { return NextResponse.json({ error: 'Could not load project.' }, { status: 503 }); }
 }
-
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: Context) {
+  const denied = requireAdmin(request); if (denied) return denied;
+  const { id } = await params;
+  if (!mongoose.isObjectIdOrHexString(id)) return missing();
   try {
-    await connectDB();
     const body = await request.json();
-    const { id } = await params;
-    
-    const project = await Project.findByIdAndUpdate(
-      id,
-      { ...body, updatedAt: new Date() },
-      { new: true, runValidators: true }
-    );
-    
-    if (!project) {
-      return NextResponse.json(
-        { error: 'Project not found' },
-        { status: 404 }
-      );
-    }
-    
+    await connectDB();
+    const existing = await Project.findById(id).lean();
+    if (!existing) return missing();
+    const input = editorialInput(body, { ...existing, _id: String(existing._id) });
+    const project = await Project.findByIdAndUpdate(id, { $set: input }, { new: true, runValidators: true }).lean();
     return NextResponse.json(project);
   } catch (error) {
-    console.error('Error updating project:', error);
-    return NextResponse.json(
-      { error: 'Failed to update project' },
-      { status: 500 }
-    );
+    const invalid = error instanceof ProjectInputError || error instanceof SyntaxError;
+    return NextResponse.json({ error: invalid ? error.message : 'Could not update the project.' }, { status: invalid ? 400 : 500 });
   }
 }
-
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(request: NextRequest, { params }: Context) {
+  const denied = requireAdmin(request); if (denied) return denied;
+  const { id } = await params;
+  if (!mongoose.isObjectIdOrHexString(id)) return missing();
   try {
     await connectDB();
-    const { id } = await params;
-    const project = await Project.findById(id);
-    
-    if (!project) {
-      return NextResponse.json(
-        { error: 'Project not found' },
-        { status: 404 }
-      );
-    }
-    
-    // Delete image from S3 if it exists
-    if (project.imageUrl) {
-      await deleteFromS3(project.imageUrl);
-    }
-    
-    // Delete the project from MongoDB
-    await Project.findByIdAndDelete(id);
-    
-    return NextResponse.json({ message: 'Project and associated image deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting project:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete project' },
-      { status: 500 }
-    );
-  }
+    // Shared images can be reused by other entries. Removing a project does not delete remote assets.
+    const result = await Project.findByIdAndDelete(id);
+    return result ? NextResponse.json({ success: true }) : missing();
+  } catch { return NextResponse.json({ error: 'Could not delete the project.' }, { status: 500 }); }
 }

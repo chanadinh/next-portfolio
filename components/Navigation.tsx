@@ -20,7 +20,7 @@ function Navigation() {
   const navItems = isHomePage ? [
     // Home page navigation - full portfolio sections
     { name: 'About', href: '#about', icon: User },
-    { name: 'Updates', href: '#updates', icon: Newspaper },
+    { name: 'Experience', href: '#updates', icon: Newspaper },
     { name: 'Projects', href: '#projects', icon: Briefcase },
     { name: 'Skills', href: '#skills', icon: Code },
     { name: 'Contact', href: '#contact', icon: MessageCircle },

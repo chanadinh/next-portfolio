@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Github, Linkedin, Mail } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { portfolio } from '../content/portfolio'
 
 export default function Hero() {
   return (
@@ -66,7 +67,7 @@ export default function Hero() {
             transition={{ delay: 0.6, duration: 0.8 }}
             className="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto"
           >
-            AI/ML Developer & Software Engineer
+            {portfolio.role}
           </motion.p>
 
           {/* Description */}
@@ -76,11 +77,15 @@ export default function Hero() {
             transition={{ delay: 0.8, duration: 0.8 }}
             className="text-lg text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed"
           >
-            Passionate about building intelligent applications and pushing the boundaries of what's possible with AI and machine learning.
+            {portfolio.description}
           </motion.p>
 
 
 
+          <div className="mb-8 flex flex-wrap justify-center gap-4">
+            <a href="#projects" className="rounded-lg bg-white px-6 py-3 font-semibold text-gray-900">Explore my work ↓</a>
+            <a href={portfolio.resume} className="rounded-lg border border-white/50 px-6 py-3 text-white" target="_blank" rel="noopener noreferrer">View résumé ↗</a>
+          </div>
           {/* Social Links */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -105,7 +110,7 @@ export default function Hero() {
               <Linkedin className="w-6 h-6" />
             </Link>
             <Link
-              href="mailto:contact@chandinh.org"
+              href="mailto:chandinh.jobs@gmail.com"
               className="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-300 transform hover:scale-110 backdrop-blur-sm"
             >
               <Mail className="w-6 h-6" />

@@ -163,7 +163,7 @@ I will review your message and get back to you as soon as possible, typically wi
 In the meantime, if you have any urgent questions, feel free to reach out through my other channels:
 - LinkedIn: https://linkedin.com/in/chandinh
 - GitHub: https://github.com/chanadinh
-- Email: contact@chandinh.org
+- Email: chandinh.jobs@gmail.com
 
 Best regards,
 Chan Dinh
@@ -355,7 +355,7 @@ This is an automated confirmation message. Please do not reply to this email.
                 <strong>🔗 Other Ways to Connect:</strong><br><br>
                 • <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/chandinh">linkedin.com/in/chandinh</a><br>
                 • <strong>GitHub:</strong> <a href="https://github.com/chanadinh">github.com/chanadinh</a><br>
-                • <strong>Email:</strong> <a href="mailto:contact@chandinh.org">contact@chandinh.org</a>
+                • <strong>Email:</strong> <a href="mailto:chandinh.jobs@gmail.com">chandinh.jobs@gmail.com</a>
             </div>
             
             <div class="social-links">
@@ -372,7 +372,7 @@ This is an automated confirmation message. Please do not reply to this email.
         
         <div class="footer">
             This is an automated confirmation message. Please do not reply to this email.<br>
-            Sent from your portfolio contact form at <strong>contact@chandinh.org</strong>
+            Sent from your portfolio contact form at <strong>chandinh.jobs@gmail.com</strong>
         </div>
     </div>
 </body>

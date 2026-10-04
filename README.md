@@ -1,6 +1,8 @@
 # 🚀 Chan Dinh - AI/ML Developer Portfolio (Next.js) - Complete Documentation
 
-A comprehensive guide covering all aspects of this modern, responsive portfolio website built with Next.js 14, showcasing expertise in Machine Learning, Artificial Intelligence, and Software Development.
+**Current dashboard workflow:** see [GitHub imports, authentication, and setup](README-GITHUB-IMPORT.md).
+
+A comprehensive guide covering all aspects of this modern, responsive portfolio website built with Next.js 15, showcasing expertise in Machine Learning, Artificial Intelligence, and Software Development.
 
 ---
 
@@ -30,7 +32,7 @@ A comprehensive guide covering all aspects of this modern, responsive portfolio 
 
 ## 🎯 Project Overview
 
-A modern, responsive portfolio website built with Next.js 14, showcasing expertise in Machine Learning, Artificial Intelligence, and Software Development. The portfolio features a comprehensive admin system, dynamic content management, analytics dashboard, and advanced features like chat IP tracking and custom email integration.
+A modern, responsive portfolio website built with Next.js 15, showcasing expertise in Machine Learning, Artificial Intelligence, and Software Development. The portfolio features a comprehensive admin system, dynamic content management, analytics dashboard, and advanced features like chat IP tracking and custom email integration.
 
 ## ✨ Features
 
@@ -51,7 +53,7 @@ A modern, responsive portfolio website built with Next.js 14, showcasing experti
 
 ## 🛠️ Technologies Used
 
-* **Framework**: Next.js 14 with App Router
+* **Framework**: Next.js 15 with App Router
 * **Frontend**: React 18, TypeScript
 * **Styling**: Tailwind CSS with custom components
 * **Animations**: Framer Motion for smooth interactions
@@ -64,29 +66,29 @@ A modern, responsive portfolio website built with Next.js 14, showcasing experti
 
 ## 🎯 Featured Projects
 
-1. **Project Pæmon - AI Web App**  
-   * Pokémon-inspired AI companion generator  
-   * Won Best Personal Project at Nosu AI Hackathon ($650)  
+1. **Project Pæmon - AI Web App**
+   * Pokémon-inspired AI companion generator
+   * Won Best Personal Project at Nosu AI Hackathon ($650)
    * Technologies: Next.js, OpenAI GPT-3.5, Stable Diffusion
 
-2. **MNIST Digit Classifier**  
-   * Machine learning for digit recognition  
-   * Neural network implementation and evaluation  
+2. **MNIST Digit Classifier**
+   * Machine learning for digit recognition
+   * Neural network implementation and evaluation
    * Technologies: Python, PyTorch, Neural Networks
 
-3. **Bike Sharing Demand Prediction**  
-   * Automated ML using AutoGluon  
-   * Time series forecasting expertise  
+3. **Bike Sharing Demand Prediction**
+   * Automated ML using AutoGluon
+   * Time series forecasting expertise
    * Technologies: Python, AutoGluon, Time Series
 
-4. **Dog Breed Classifier**  
-   * Computer vision with PyTorch  
-   * CNN architecture evaluation  
+4. **Dog Breed Classifier**
+   * Computer vision with PyTorch
+   * CNN architecture evaluation
    * Technologies: Python, PyTorch, Computer Vision
 
-5. **Medusa Bot - Discord Bot**  
-   * Multi-API Discord bot  
-   * REST API integration and event handling  
+5. **Medusa Bot - Discord Bot**
+   * Multi-API Discord bot
+   * REST API integration and event handling
    * Technologies: JavaScript, Node.js, Discord.js
 
 ---
@@ -95,7 +97,7 @@ A modern, responsive portfolio website built with Next.js 14, showcasing experti
 
 ### Prerequisites
 
-* Node.js 18+ 
+* Node.js 22.13+
 * npm or yarn
 * MongoDB Atlas account (free tier available)
 * Email service account (Resend, SendGrid, or Mailgun)
@@ -241,7 +243,7 @@ CLOUDFLARE_R2_PUBLIC_DOMAIN=your-r2-public-domain
 ### Access
 - **Login**: `/login`
 - **Dashboard**: `/admin`
-- **Default Credentials**: `admin` / `admin123`
+- **Credentials**: explicitly configured ADMIN_USERNAME and ADMIN_PASSWORD; no defaults.
 
 ### Features
 - Secure JWT authentication
@@ -254,7 +256,7 @@ CLOUDFLARE_R2_PUBLIC_DOMAIN=your-r2-public-domain
 - Chat analytics with IP tracking
 
 ### Security Setup
-1. **Change default credentials** immediately in production
+1. **Configure unique admin credentials** before starting the app
 2. **Generate secure JWT secret**:
    ```bash
    openssl rand -base64 32
@@ -263,7 +265,7 @@ CLOUDFLARE_R2_PUBLIC_DOMAIN=your-r2-public-domain
 4. **Enable HTTPS** in production
 
 ### Admin Routes Protection
-- **Middleware**: `middleware.ts` protects all `/admin/*` routes
+- **Middleware**: `app/admin/layout.tsx` verifies the signed session before rendering; privileged API handlers also verify it
 - **Client-side**: `useAuth` hook manages authentication state
 - **Protected Routes**: `ProtectedRoute` component for additional security
 
@@ -303,10 +305,10 @@ CLOUDFLARE_R2_PUBLIC_DOMAIN=your-r2-public-domain
 ## 📊 Analytics Dashboard
 
 ### Current Status
-✅ Analytics component added to root layout  
-✅ Dashboard component updated to fetch real data  
-✅ API endpoint created for analytics data  
-✅ Chat analytics with IP tracking implemented  
+✅ Analytics component added to root layout
+✅ Dashboard component updated to fetch real data
+✅ API endpoint created for analytics data
+✅ Chat analytics with IP tracking implemented
 ⚠️ **Vercel Analytics API integration needs completion**
 
 ### Setup Steps
@@ -465,12 +467,12 @@ function getClientIP(request: NextRequest): string {
   if (forwarded) {
     return forwarded.split(',')[0].trim()
   }
-  
+
   const realIP = request.headers.get('x-real-ip')
   if (realIP) {
     return realIP
   }
-  
+
   // Additional fallback logic...
 }
 ```
@@ -772,7 +774,7 @@ The project can be deployed to any hosting platform that supports Node.js:
 ## 🚨 Security Best Practices
 
 ### Production Deployment
-1. **Change default credentials** immediately
+1. **Configure unique admin credentials** before starting the app
 2. **Use strong passwords** (12+ characters, mixed case, symbols)
 3. **Generate random JWT secret** (32+ characters)
 4. **Enable HTTPS** in production
@@ -797,7 +799,7 @@ The project can be deployed to any hosting platform that supports Node.js:
 
 #### Admin Access
 - Check if you're logged in
-- Verify JWT token in localStorage
+- Verify the HttpOnly session with /api/admin/session; sign in again after this upgrade
 - Check browser console for errors
 
 #### Skills Not Displaying
@@ -897,8 +899,8 @@ node scripts/test-email-logo.js
 
 * **GitHub**: [@chanadinh](https://github.com/chanadinh)
 * **LinkedIn**: [Chan Dinh](https://linkedin.com/in/chandinh)
-* **Email**: contact@chandinh.org
-* **Website**: [chandinh.org](https://chandinh.org)
+* **Email**: chandinh.jobs@gmail.com
+* **Website**: [chandinh.dev](https://chandinh.dev)
 
 ---
 
@@ -910,7 +912,7 @@ This project is open source and available under the MIT License.
 
 ## 🙏 Acknowledgments
 
-* Built with Next.js 14
+* Built with Next.js 15
 * Styled with Tailwind CSS
 * Icons from Lucide React
 * Animations with Framer Motion
@@ -996,6 +998,6 @@ If you have any questions or need help customizing this portfolio, please open a
 
 ---
 
-**Last Updated**: December 2024  
-**Status**: ✅ Complete and Production Ready  
+**Last Updated**: December 2024
+**Status**: ✅ Complete and Production Ready
 **Version**: 2.0.0 - Enhanced with Chat IP Tracking, Custom Email, and Asset Management

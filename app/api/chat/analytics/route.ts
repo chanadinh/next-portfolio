@@ -1,8 +1,11 @@
+import { requireAdmin } from '../../../../lib/admin-auth';
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '../../../../lib/mongodb'
 import Chat from '../../../../models/Chat'
 
 export async function GET(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     const { searchParams } = new URL(request.url)
     const includeMessages = searchParams.get('includeMessages') === 'true'

@@ -4,16 +4,17 @@ import './globals.css'
 import { Analytics } from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
-  title: 'Chan Dinh - AI/ML Developer Portfolio',
-  description: 'AI/ML Developer and Software Engineer specializing in machine learning, artificial intelligence, and full-stack development. View projects, skills, and experience.',
-  keywords: ['AI Developer', 'Machine Learning', 'Software Engineer', 'Full Stack Developer', 'Portfolio', 'Chan Dinh'],
+  title: 'Chan Dinh — AI, Software & Cybersecurity',
+  description: 'AI and software developer building RAG systems, cybersecurity automation, and real-time applications. Explore projects and experience from Chan Dinh.',
+  keywords: ['AI Developer', 'Cybersecurity', 'Machine Learning', 'Software Engineer', 'Full Stack Developer', 'Portfolio', 'Chan Dinh'],
   authors: [{ name: 'Chan Dinh' }],
   creator: 'Chan Dinh',
-  metadataBase: new URL('https://chandinh.org'),
+  metadataBase: new URL('https://chandinh.dev'),
+  alternates: { canonical: '/' },
   openGraph: {
-    title: 'Chan Dinh - AI/ML Developer Portfolio',
-    description: 'AI/ML Developer and Software Engineer specializing in machine learning, artificial intelligence, and full-stack development.',
-    url: 'https://chandinh.org',
+    title: 'Chan Dinh — AI, Software & Cybersecurity',
+    description: 'The story behind my work in AI, software, and cybersecurity—from mathematics to useful systems, with a little Formula 1 along the way.',
+    url: 'https://chandinh.dev',
     siteName: 'Chan Dinh Portfolio',
     images: [
       {
@@ -28,8 +29,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Chan Dinh - AI/ML Developer Portfolio',
-    description: 'AI/ML Developer and Software Engineer specializing in machine learning, artificial intelligence, and full-stack development.',
+    title: 'Chan Dinh — AI, Software & Cybersecurity',
+    description: 'The story behind my work in AI, software, and cybersecurity—from mathematics to useful systems, with a little Formula 1 along the way.',
     images: ['/images/logo.png'],
   },
   icons: {

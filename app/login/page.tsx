@@ -28,34 +28,9 @@ export default function LoginPage() {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log('Login successful, token received:', data.token ? 'yes' : 'no');
-        // Store the token in localStorage
-        localStorage.setItem('adminToken', data.token);
-        console.log('Token stored in localStorage');
-        // Show success message
+        localStorage.removeItem('adminToken');
         setSuccess(true);
-        // Redirect to admin dashboard
-        console.log('Redirecting to /admin');
-        // Try multiple redirect methods
-        console.log('Executing redirect now...');
-        
-        // Method 1: Try window.location.replace
-        try {
-          window.location.replace('/admin');
-        } catch (e) {
-          console.log('Method 1 failed, trying Method 2');
-          // Method 2: Try window.location.href
-          window.location.href = '/admin';
-        }
-        
-        // Fallback: Force redirect after delay
-        setTimeout(() => {
-          console.log('Fallback redirect executing...');
-          if (window.location.pathname !== '/admin') {
-            window.location.href = '/admin';
-          }
-        }, 2000);
+        window.location.replace('/admin');
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Login failed');

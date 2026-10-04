@@ -82,10 +82,10 @@ He's passionate about building intelligent applications and pushing the boundari
 
 Additional context:
 - Location: Casselberry, FL
-- Contact: contact@chandinh.org
+- Contact: chandinh.jobs@gmail.com
 - LinkedIn: linkedin.com/in/chandinh
 - GitHub: github.com/chanadinh
-- Website: chandinh.org`;
+- Website: chandinh.dev`;
 
     if (personalInfo) {
       systemContent += `\n\nHere's what I know about Chan Dinh personally:`;

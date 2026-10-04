@@ -1,3 +1,4 @@
+import { requireAdmin } from '../../../lib/admin-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { testEmailServices, getEmailServiceConfig } from '../../../lib/email';
 
@@ -5,16 +6,9 @@ import { testEmailServices, getEmailServiceConfig } from '../../../lib/email';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
-    // Check if this is an admin request (you might want to add proper auth)
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Unauthorized - Admin access required' },
-        { status: 401 }
-      );
-    }
-
     console.log('🧪 Testing email services...');
     
     // Get service configuration
@@ -67,6 +61,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     // Parse the request body
     const body = await request.json();

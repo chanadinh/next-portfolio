@@ -1,7 +1,10 @@
+import { requireAdmin } from '../../../lib/admin-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '../../../lib/mongodb';
 
 export async function GET(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     const { db } = await connectToDatabase();
     
@@ -20,6 +23,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     const { db } = await connectToDatabase();
     const body = await request.json();
@@ -55,6 +60,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
     const { db } = await connectToDatabase();
     const body = await request.json();
