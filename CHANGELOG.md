@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/chanadinh/next-portfolio/compare/v1.2.0...v1.3.0) (2026-10-04)
+
+
+### Features
+
+* **portfolio:** add profile controls and a new favicon ([a44d310](https://github.com/chanadinh/next-portfolio/commit/a44d31071e41c90404f74e956c9f0f98f093c79d))
+
 # [1.2.0](https://github.com/chanadinh/next-portfolio/compare/v1.1.0...v1.2.0) (2026-10-04)
 
 
