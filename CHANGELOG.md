@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/chanadinh/next-portfolio/compare/v1.6.0...v1.7.0) (2026-10-05)
+
+
+### Features
+
+* **portfolio:** add skill logos and simplify the f1 section ([7177484](https://github.com/chanadinh/next-portfolio/commit/71774841a5b62ba5a75df34e492b6c1e85453de0))
+
 # [1.6.0](https://github.com/chanadinh/next-portfolio/compare/v1.5.0...v1.6.0) (2026-10-05)
 
 
