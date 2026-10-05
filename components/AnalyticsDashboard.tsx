@@ -1,315 +1,114 @@
-'use client'
+'use client';
+
+import { useEffect, useState } from 'react';
+import { ArrowUpRight, BarChart3, Eye, Globe, Monitor, Users } from 'lucide-react';
+import { ANALYTICS_RANGES, type AnalyticsRange, type AnalyticsResult } from '../lib/analytics-types';
 import styles from './portfolio/editorial.module.css';
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { BarChart3, Users, Eye, MousePointer, TrendingUp, Globe, Clock, Activity, AlertCircle } from 'lucide-react';
-
-interface AnalyticsData {
-  pageViews: number;
-  visitors: number;
-  topPages: Array<{ path: string; views: number }>;
-  referrers: Array<{ source: string; visits: number }>;
-  deviceTypes: Array<{ device: string; percentage: number }>;
-  timeOnSite: number;
-  bounceRate: number;
-}
-
-interface VercelAnalyticsData {
-  pageViews: number;
-  visitors: number;
-  topPages: Array<{ path: string; views: number }>;
-  referrers: Array<{ source: string; visits: number }>;
-  deviceTypes: Array<{ device: string; percentage: number }>;
-  timeOnSite: number;
-  bounceRate: number;
-}
-
 export default function AnalyticsDashboard() {
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+  const [result, setResult] = useState<AnalyticsResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('7d');
-  const [isRealData, setIsRealData] = useState(false);
+  const [timeRange, setTimeRange] = useState<AnalyticsRange>('7d');
+  const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
-    const fetchAnalytics = async () => {
+    const controller = new AbortController();
+    async function load() {
       setLoading(true);
       setError(null);
-      
+      setResult(null);
       try {
-        // Try to fetch real Vercel Analytics data
-        const response = await fetch('/api/analytics', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ timeRange }),
-        });
-
-        if (response.ok) {
-          const realData: VercelAnalyticsData = await response.json();
-          setAnalyticsData(realData);
-          setIsRealData(true);
-        } else {
-          // Fallback to mock data if API fails
-          throw new Error('Failed to fetch real analytics');
-        }
-      } catch (err) {
-        console.warn('Using mock data as fallback:', err);
-        setError('Real analytics unavailable - showing demo data');
-        
-        // Fallback to mock data
-        const mockData: AnalyticsData = {
-          pageViews: 1247,
-          visitors: 892,
-          topPages: [
-            { path: '/', views: 456 },
-            { path: '/projects', views: 234 },
-            { path: '/about', views: 189 },
-            { path: '/skills', views: 156 },
-            { path: '/contact', views: 98 }
-          ],
-          referrers: [
-            { source: 'Direct', visits: 456 },
-            { source: 'Google', visits: 234 },
-            { source: 'LinkedIn', visits: 123 },
-            { source: 'GitHub', visits: 89 },
-            { source: 'Twitter', visits: 67 }
-          ],
-          deviceTypes: [
-            { device: 'Desktop', percentage: 65 },
-            { device: 'Mobile', percentage: 28 },
-            { device: 'Tablet', percentage: 7 }
-          ],
-          timeOnSite: 145, // seconds
-          bounceRate: 32.5
-        };
-        
-        setAnalyticsData(mockData);
-        setIsRealData(false);
+        const response = await fetch(`/api/analytics?timeRange=${timeRange}`, { cache: 'no-store', signal: controller.signal });
+        if (response.status === 401) throw new Error('Your session has expired. Sign in again to view analytics.');
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.message || payload.error || 'Analytics could not be loaded. Try again.');
+        if (!['ready', 'empty', 'not_configured', 'unavailable'].includes(payload.status)) throw new Error('Analytics returned an unexpected response. Try again.');
+        if (!controller.signal.aborted) setResult(payload);
+      } catch (failure) {
+        if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : 'Analytics could not be loaded. Try again.');
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
-    };
+    }
+    void load();
+    return () => controller.abort();
+  }, [timeRange, refresh]);
 
-    fetchAnalytics();
-  }, [timeRange]);
-
-  if (loading) {
-    return (
-      <p role="status" className={styles.inlineLoading}>Loading visitor insights…</p>
-    );
-  }
-
-  if (!analyticsData) {
-    return (
-      <div className="text-center text-[#626663] py-8">
-        No analytics data available
-      </div>
-    );
-  }
-
+  const report = result && (result.status === 'ready' || result.status === 'empty') ? result : null;
+  const panel = 'border border-[#c9c5be] bg-[#f8f5ef] p-5 sm:p-6';
   return (
     <div className="space-y-6">
-      {/* Time Range Selector */}
       <div className="flex flex-wrap justify-between items-center gap-4">
-        <h2 className="text-2xl font-semibold text-[#101214]">Website Analytics</h2>
-        <div className="flex space-x-2">
-          {(['24h', '7d', '30d'] as const).map((range) => (
-            <button
-              key={range}
-              aria-pressed={timeRange === range}
-              onClick={() => setTimeRange(range)}
-              className={`px-3 py-1 rounded-none text-sm font-medium transition-colors ${
-                timeRange === range
-                  ? 'bg-[#ff6248] text-[#101214]'
-                  : 'bg-[#e2ded6] text-[#626663] hover:bg-[#d5d0c7]'
-              }`}
-            >
-              {range === '24h' ? '24 Hours' : range === '7d' ? '7 Days' : '30 Days'}
+        <h3 className="text-xl text-[#101214]">Website analytics</h3>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Analytics time range">
+          {ANALYTICS_RANGES.map(range => (
+            <button key={range} type="button" aria-pressed={timeRange === range} onClick={() => setTimeRange(range)}
+              className={`min-h-11 px-3 text-sm ${timeRange === range ? 'bg-[#ff6248] text-[#101214]' : 'bg-[#e2ded6] text-[#444843]'}`}>
+              {range === '24h' ? '24 hours' : range === '7d' ? '7 days' : '30 days'}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Data Source Indicator */}
-      {error && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-none p-4">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
-            <div>
-              <h4 className="text-sm font-medium text-yellow-900">Demo Mode</h4>
-              <p className="text-sm text-yellow-700 mt-1">{error}</p>
-            </div>
+      {loading && <p role="status" className={styles.inlineLoading}>Loading visitor insights…</p>}
+      {!loading && error && (
+        <div role="alert" className={panel}>
+          <h4 className="font-semibold text-[#101214]">Analytics unavailable</h4>
+          <p className="mt-2 text-sm text-[#626663]">{error}</p>
+          <div className="mt-4 flex flex-wrap gap-5 text-sm">
+            <button type="button" className="min-h-11 underline underline-offset-4" onClick={() => setRefresh(value => value + 1)}>Try again</button>
+            <a className="inline-flex min-h-11 items-center underline underline-offset-4" href="/login">Sign in</a>
           </div>
         </div>
       )}
-
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-[#626663]">Page Views</p>
-              <p className="text-2xl font-bold text-[#101214]">{analyticsData.pageViews.toLocaleString()}</p>
-            </div>
-            <div className="p-3 bg-[#f3d3c9] rounded-none">
-              <Eye className="w-6 h-6 text-[#a12e20]" />
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-[#626663]">Unique Visitors</p>
-              <p className="text-2xl font-bold text-[#101214]">{analyticsData.visitors.toLocaleString()}</p>
-            </div>
-            <div className="p-3 bg-green-100 rounded-none">
-              <Users className="w-6 h-6 text-green-600" />
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-[#626663]">Avg. Time on Site</p>
-              <p className="text-2xl font-bold text-[#101214]">{Math.floor(analyticsData.timeOnSite / 60)}m {analyticsData.timeOnSite % 60}s</p>
-            </div>
-            <div className="p-3 bg-[#e2ded6] rounded-none">
-              <Clock className="w-6 h-6 text-[#626663]" />
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-[#626663]">Bounce Rate</p>
-              <p className="text-2xl font-bold text-[#101214]">{analyticsData.bounceRate}%</p>
-            </div>
-            <div className="p-3 bg-orange-100 rounded-none">
-              <Activity className="w-6 h-6 text-orange-600" />
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Charts and Detailed Data */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Pages */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
-        >
-          <h3 className="text-lg font-semibold text-[#101214] mb-4 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5" />
-            Top Pages
-          </h3>
-          <div className="space-y-3">
-            {analyticsData.topPages.map((page, index) => (
-              <div key={page.path} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-[#626663] w-6">#{index + 1}</span>
-                  <span className="text-sm text-[#444843] font-mono">{page.path}</span>
-                </div>
-                <span className="text-sm font-semibold text-[#101214]">{page.views.toLocaleString()}</span>
+      {!loading && result?.status === 'not_configured' && (
+        <div role="status" className={panel}>
+          <h4 className="font-semibold text-[#101214]">Connect visitor insights</h4>
+          <p className="mt-2 text-sm text-[#626663]">{result.message} Traffic reports are available in your Vercel project’s Analytics tab once Web Analytics is enabled.</p>
+          <p className="mt-4 text-sm text-[#626663]">To show those reports here, add the following server environment variables, then redeploy:</p>
+          <ul className="mt-3 space-y-2 text-sm">
+            {result.missing.map(key => <li key={key}><code className="break-all">{key}</code></li>)}
+          </ul>
+          <p className="mt-3 text-sm text-[#626663]">For a team-owned project, also set <code>VERCEL_TEAM_ID</code>. Keep the access token on the server.</p>
+          <a className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm underline underline-offset-4" href="https://vercel.com/docs/analytics/web-analytics-api" target="_blank" rel="noopener noreferrer">Connection guide <ArrowUpRight size={16} aria-hidden="true" /></a>
+        </div>
+      )}
+      {!loading && result?.status === 'unavailable' && <p role="alert" className={panel}>{result.message}</p>}
+      {!loading && report && (
+        <>
+          {report.status === 'empty' && <p role="status" className="text-sm text-[#626663]">No page views were recorded in this period. Try a longer range or check that Web Analytics is enabled in Vercel.</p>}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {[
+              { label: 'Page views', value: report.data.pageViews, Icon: Eye },
+              { label: 'Visitors', value: report.data.visitors, Icon: Users },
+            ].map(({ label, value, Icon }) => (
+              <div key={label} className={`${panel} flex items-center justify-between gap-4`}>
+                <div><p className="text-sm text-[#626663]">{label}</p><p className="mt-2 text-3xl font-semibold text-[#101214]">{value.toLocaleString()}</p></div>
+                <Icon size={25} className="shrink-0 text-[#b53523]" aria-hidden="true" />
               </div>
             ))}
           </div>
-        </motion.div>
-
-        {/* Traffic Sources */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
-        >
-          <h3 className="text-lg font-semibold text-[#101214] mb-4 flex items-center gap-2">
-            <Globe className="w-5 h-5" />
-            Traffic Sources
-          </h3>
-          <div className="space-y-3">
-            {analyticsData.referrers.map((referrer, index) => (
-              <div key={referrer.source} className="flex items-center justify-between">
-                <span className="text-sm text-[#444843]">{referrer.source}</span>
-                <span className="text-sm font-semibold text-[#101214]">{referrer.visits.toLocaleString()}</span>
-              </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {[
+              { title: 'Top pages', Icon: BarChart3, rows: report.data.topPages.map(page => ({ name: page.path, views: page.views })) },
+              { title: 'Referrers', Icon: Globe, rows: report.data.referrers.map(referrer => ({ name: referrer.source, views: referrer.views })) },
+            ].map(({ title, Icon, rows }) => (
+              <section key={title} className={`${panel} min-w-0`}>
+                <h4 className="flex items-center gap-2 font-semibold text-[#101214]"><Icon size={18} aria-hidden="true" />{title}</h4>
+                <p className="mt-2 text-xs text-[#626663]">Page views</p>
+                {rows.length ? <ul className="mt-4 space-y-3">{rows.map(row => <li key={row.name} className="flex justify-between gap-4 text-sm"><span className="min-w-0 break-words">{row.name}</span><span className="shrink-0 font-semibold">{row.views.toLocaleString()}</span></li>)}</ul> : <p className="mt-4 text-sm text-[#626663]">No data in this period.</p>}
+              </section>
             ))}
           </div>
-        </motion.div>
-      </div>
-
-      {/* Device Types */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.7 }}
-        className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
-      >
-        <h3 className="text-lg font-semibold text-[#101214] mb-4 flex items-center gap-2">
-          <MousePointer className="w-5 h-5" />
-          Device Types
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {analyticsData.deviceTypes.map((device) => (
-            <div key={device.device} className="text-center p-4 bg-[#eeeae2] rounded-none">
-              <p className="text-2xl font-bold text-[#b53523]">{device.percentage}%</p>
-              <p className="text-sm text-[#626663]">{device.device}</p>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Analytics Status */}
-      <div className={`border rounded-none p-4 ${isRealData ? 'bg-green-50 border-green-200' : 'bg-[#f3e0d9] border-[#d4a59a]'}`}>
-        <div className="flex items-start gap-3">
-          <TrendingUp className={`w-5 h-5 ${isRealData ? 'text-green-600' : 'text-[#a12e20]'} mt-0.5`} />
-          <div>
-            <h4 className={`text-sm font-medium ${isRealData ? 'text-green-900' : 'text-[#7f281c]'}`}>
-              {isRealData ? 'Real Analytics Active' : 'Analytics Setup Required'}
-            </h4>
-            <p className={`text-sm ${isRealData ? 'text-green-700' : 'text-[#7f281c]'} mt-1`}>
-              {isRealData 
-                ? 'Your dashboard is now showing real-time analytics data from Vercel.'
-                : 'To see real analytics data, deploy to Vercel and enable Web Analytics in your project dashboard.'
-              }
-            </p>
-            {!isRealData && (
-              <ul className="text-sm text-[#7f281c] mt-2 list-disc list-inside space-y-1">
-                <li>Deploy to Vercel to enable real-time analytics</li>
-                <li>Wait 24-48 hours for initial data collection</li>
-                <li>Create an API route to fetch analytics data</li>
-              </ul>
-            )}
-          </div>
-        </div>
-      </div>
+          <section className={panel}>
+            <h4 className="flex items-center gap-2 font-semibold text-[#101214]"><Monitor size={18} aria-hidden="true" />Devices</h4>
+            <p className="mt-2 text-xs text-[#626663]">Share of page views</p>
+            {report.data.deviceTypes.length ? <ul className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">{report.data.deviceTypes.map(device => <li key={device.device} className="bg-[#eeeae2] p-4"><p className="text-2xl text-[#b53523]">{device.percentage}%</p><p className="mt-1 text-sm capitalize">{device.device}</p></li>)}</ul> : <p className="mt-4 text-sm text-[#626663]">No device data in this period.</p>}
+          </section>
+          <p className="text-xs text-[#626663]">Source: Vercel Web Analytics · Production traffic · Requested at {new Date(report.until).toLocaleString()}</p>
+        </>
+      )}
     </div>
   );
 }

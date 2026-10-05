@@ -149,8 +149,11 @@ JWT_SECRET=your_jwt_secret_key_here
 # OpenAI API (for chat functionality)
 OPENAI_API_KEY=your_openai_api_key_here
 
-# Vercel Analytics (optional)
-VERCEL_ANALYTICS_ID=your_analytics_id_here
+# Vercel Analytics dashboard reports (optional; server-only)
+VERCEL_ANALYTICS_TOKEN=
+VERCEL_PROJECT_ID=
+# Set for a team-owned project; omit for a personal-account project.
+VERCEL_TEAM_ID=
 
 # Email Service Configuration
 EMAIL_SERVICE=resend  # or 'sendgrid' or 'mailgun'
@@ -304,26 +307,22 @@ CLOUDFLARE_R2_PUBLIC_DOMAIN=your-r2-public-domain
 
 ## 📊 Analytics Dashboard
 
-### Current Status
-✅ Analytics component added to root layout
-✅ Dashboard component updated to fetch real data
-✅ API endpoint created for analytics data
-✅ Chat analytics with IP tracking implemented
-⚠️ **Vercel Analytics API integration needs completion**
+The public site sends page views through `@vercel/analytics` in the root layout. The authenticated dashboard reads production traffic through the [Vercel Web Analytics API](https://vercel.com/docs/analytics/web-analytics-api).
 
 ### Setup Steps
-1. **Deploy to Vercel**: `vercel deploy`
-2. **Enable Web Analytics**: Go to Vercel dashboard → Analytics tab → Enable
-3. **Wait 24-48 hours** for initial data collection
-4. **Complete API integration** (placeholder function in API route)
+1. Enable **Web Analytics** in the portfolio project's Vercel dashboard.
+2. Create a Vercel access token that can read the owning account/team's project, and set it as the server environment variable `VERCEL_ANALYTICS_TOKEN`.
+3. Set `VERCEL_PROJECT_ID` to the portfolio project's ID. For team-owned projects also set `VERCEL_TEAM_ID`; omit it for personal-account projects.
+4. Redeploy with these variables, then open `/admin` → **Analytics**. Do not prefix the token with `NEXT_PUBLIC_` or commit it. `VERCEL_ANALYTICS_ID` is no longer used.
 
-### Features
-- **Smart Fallback**: Gracefully switches between real and mock data
-- **Clear Status**: Visual indicators show whether real analytics are active
-- **Time Ranges**: 24h, 7d, 30d filtering options
-- **Key Metrics**: Page views, visitors, time on site, bounce rate
-- **Traffic Sources**: Referrer analysis and device types
-- **Chat Analytics**: Comprehensive chat statistics with IP tracking
+### Behavior
+- **Reports:** page views, visitors, top paths, referrer page views, and device share of page views for 24h, 7d, or 30d. Available history depends on the Vercel plan.
+- **Accurate totals:** visitors come from one production aggregate across the selected interval, rather than summing overlapping page or daily counts.
+- **Missing setup:** HTTP 200 with `status: "not_configured"` and the names of missing variables; the dashboard shows a connection guide without invented metrics.
+- **No traffic:** a successful empty provider response shows zero traffic explicitly.
+- **Service failure:** HTTP 502 with a safe error message and a retry action; no mock or zero-filled fallback. Authentication and invalid requests still return 401/403 and 400 respectively.
+- **Unsupported metrics:** time on site and bounce rate were sample values and have been removed; the queried API does not supply them.
+- **Privacy:** reports require the admin session and use `Cache-Control: no-store`. The token stays in server-to-Vercel requests. Chat analytics remain a separate database-backed report.
 
 ---
 
@@ -808,9 +807,10 @@ The project can be deployed to any hosting platform that supports Node.js:
 - Run `npm run seed:skills` to populate database
 
 #### Analytics Issues
-- Check if Vercel Analytics is enabled in dashboard
-- Verify environment variables
-- Wait 24-48 hours after enabling analytics
+- Enable Web Analytics in the correct Vercel project.
+- Add `VERCEL_ANALYTICS_TOKEN` and `VERCEL_PROJECT_ID`, plus `VERCEL_TEAM_ID` for a team-owned project, and redeploy. See the Analytics Dashboard setup above.
+- For denied access, check token permissions and team ownership. For unavailable history, select a shorter range supported by the plan.
+- A connection guide means the reporting credentials are missing; zero traffic means Vercel returned a successful empty report. Neither state displays sample traffic.
 
 #### Chat IP Tracking Issues
 - Check MongoDB connection and Chat model
