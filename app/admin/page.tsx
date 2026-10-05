@@ -8,6 +8,7 @@ import ChatAnalytics from '../../components/ChatAnalytics';
 import Navigation from '../../components/Navigation';
 import ProjectManager from '../../components/admin/ProjectManager';
 import ProfileManager from '../../components/admin/ProfileManager';
+import LoadingScreen from '../../components/portfolio/LoadingScreen';
 
 interface Skill {
   _id: string;
@@ -294,11 +295,7 @@ export default function AdminPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingScreen context="dashboard" />;
   }
 
   return (
