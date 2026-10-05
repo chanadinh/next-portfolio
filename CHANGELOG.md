@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/chanadinh/next-portfolio/compare/v1.4.0...v1.5.0) (2026-10-05)
+
+
+### Features
+
+* **portfolio:** extend the editorial design across the site ([3cf7b59](https://github.com/chanadinh/next-portfolio/commit/3cf7b59a9a063f1f36ca37ca0562bd76cf2052c4))
+
 # [1.4.0](https://github.com/chanadinh/next-portfolio/compare/v1.3.0...v1.4.0) (2026-10-05)
 
 
