@@ -27,7 +27,13 @@ export default function Portfolio() {
             <div><p className={styles.overline}>The person behind the projects</p><h2 className={styles.heroHeading}>Driven by<br /><em>curiosity.</em></h2><p className={styles.heroCopy}>{story.introduction}</p>
               <div className={styles.actions}><a href="#work" className={styles.solidButton}>Explore my work <ArrowUpRight size={18} aria-hidden="true" /></a><a href="#story" className={styles.plainLink}>Read the story <ArrowDown size={17} aria-hidden="true" /></a></div>
             </div>
-            <figure className={styles.portraitStage}><div className={styles.speedLines} aria-hidden="true"><i /><i /><i /></div><div className={styles.portraitFrame}><Image src="/images/chan-editorial.png" alt="Chan Dinh" width={1122} height={1402} sizes="(max-width: 360px) 140px, (max-width: 680px) 160px, (max-width: 950px) 220px, 260px" priority /><span className={styles.portraitCorner} aria-hidden="true">CD / 01</span></div><figcaption>CS at UCF<br />Cybersecurity team at Siemens Energy<br />F1 enthusiast, through and through.</figcaption></figure>
+            <figure className={styles.portraitStage}>
+              <div className={styles.portraitArtwork}>
+                <div className={styles.speedLines} aria-hidden="true"><i /><i /><i /></div>
+                <div className={styles.portraitFrame}><Image src="/images/chan-editorial.png" alt="Chan Dinh" width={1122} height={1402} sizes="(max-width: 950px) 220px, 260px" priority /><span className={styles.portraitCorner} aria-hidden="true">CD / 01</span></div>
+              </div>
+              <figcaption><span>CS at UCF</span><span>Cybersecurity team at Siemens Energy</span><span>F1 enthusiast, through and through.</span></figcaption>
+            </figure>
           </div>
           <div className={styles.heroBottom}><span>From mathematics to systems.<br />From ideas to things people use.</span><a href="#story" aria-label="Continue to the first chapter"><ArrowDown size={22} aria-hidden="true" /></a><span>Scroll to follow the story<br /><span className={styles.accent}>01 — 04</span></span></div>
         </div>
