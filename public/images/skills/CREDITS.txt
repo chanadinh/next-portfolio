@@ -1,0 +1,36 @@
+Skill technology logos
+
+Devicon: https://github.com/devicons/devicon
+Pinned commit: 7330accdbc47e2dc0c19789a48533c4a3c50fe58
+License: DEVICON-LICENSE.txt (MIT)
+
+OpenSearch mark: https://github.com/simple-icons/simple-icons
+Pinned commit: 98820a4dc8c363ca72fa2c0d294ea4a0a9bba75d
+License: SIMPLE-ICONS-LICENSE.txt
+
+Original SVG artwork is stored unchanged. Brand marks identify technologies;
+they do not imply endorsement. Azure AI Search uses the Azure provider mark;
+PyQt/PySide6 uses Qt, C/C++ uses C++, and Git/GitHub uses GitHub.
+Concepts without a product mark use the existing Lucide icon library.
+
+Sources:
+pytorch.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/pytorch/pytorch-original.svg
+azure.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/azure/azure-original.svg
+mongodb.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/mongodb/mongodb-original.svg
+mysql.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/mysql/mysql-original.svg
+python.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/python/python-original.svg
+java.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/java/java-original.svg
+cplusplus.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/cplusplus/cplusplus-original.svg
+typescript.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/typescript/typescript-original.svg
+react.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/react/react-original.svg
+nextjs.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/nextjs/nextjs-original.svg
+nodejs.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/nodejs/nodejs-original.svg
+fastapi.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/fastapi/fastapi-original.svg
+flask.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/flask/flask-original.svg
+qt.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/qt/qt-original.svg
+docker.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/docker/docker-original.svg
+kubernetes.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/kubernetes/kubernetes-original.svg
+terraform.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/terraform/terraform-original.svg
+github.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/github/github-original.svg
+amazonwebservices.svg: https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/amazonwebservices/amazonwebservices-original-wordmark.svg
+opensearch.svg: https://raw.githubusercontent.com/simple-icons/simple-icons/98820a4dc8c363ca72fa2c0d294ea4a0a9bba75d/icons/opensearch.svg

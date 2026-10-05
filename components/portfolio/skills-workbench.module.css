@@ -63,7 +63,10 @@
 .inventory{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-column:1/-1;border-top:1px solid #34373a;padding-top:26px;gap:22px 30px}
 .toolGroup h5{font-family:var(--font-label),monospace;font-size:10px;font-weight:400;text-transform:uppercase;letter-spacing:.06em;color:#ff806a;margin:0 0 12px}
 .toolGroup ul{list-style:none;display:flex;flex-wrap:wrap;gap:7px;margin:0;padding:0}
-.toolGroup li{font-size:12px;line-height:1.5;padding:5px 8px;border:1px solid #45494d;color:#d0d0cd;overflow-wrap:anywhere}
+.toolGroup li{display:inline-flex;align-items:center;gap:8px;max-width:100%;min-height:40px;font-size:12px;line-height:1.5;padding:5px 10px 5px 5px;border:1px solid #45494d;color:#d0d0cd;overflow-wrap:anywhere}
+.logoTile{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:3px;background:#f5f3ef}
+.logoTile img{display:block;width:20px;height:20px;object-fit:contain}
+.conceptTile{background:#22282c;color:#ff806a;border:1px solid #45494d}
 @media(max-width:950px){.panel{gap:25px;padding:28px}.diagram{padding:16px}.nodes{column-gap:22px}.nodes strong{font-size:9px}}
 @media(max-width:680px){.workbench{margin-top:48px}.heading{display:block}.heading .intro{max-width:none;margin-top:20px}.choices{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:10px;padding-bottom:18px}.selector{padding-right:12px}.stop{margin-bottom:8px}.selector:nth-child(2) .connector::after{display:none}.verb{font-size:12px}.discipline{font-size:10px}.panel{grid-template-columns:minmax(0,1fr);padding:24px;gap:26px}.panelTop{margin-bottom:14px}.story h4{font-size:24px}.diagram{max-width:420px;width:100%;justify-self:center}.nodes strong{font-size:10px}.inventory{grid-template-columns:1fr;gap:22px;padding-top:24px}.index{font-size:40px}}
 @media(forced-colors:active){.number,.panels,.nodes li{border:1px solid CanvasText}.choice:checked~.choices .number{forced-color-adjust:auto}}

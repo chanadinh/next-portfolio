@@ -72,7 +72,7 @@ export default function Portfolio() {
       <section id="off-duty" className={`${styles.racingSection} ${styles.section}`} aria-labelledby="racing-title">
         <div className={styles.container}><Chapter number="04">There’s a person behind all of this.</Chapter><div className={styles.racingLayout}>
           <div className={styles.racingPoster} aria-hidden="true"><div className={styles.startLights}><i /><i /><i /><i /><i /></div><span>OFF<br />DUTY<span className={styles.racingSlash}>/</span></span><div className={styles.checkered} /><small>RACING. ENGINEERING. STRATEGY. PEOPLE.</small></div>
-          <div className={styles.racingCopy}><Flag size={28} aria-hidden="true" /><h2 id="racing-title">Formula 1.<br /><em>All of it.</em></h2><p>{portfolio.offTheClock.description}</p><p>{story.racingConnection}</p><div className={styles.racingResult}><span className={styles.label}>AWS DeepRacer Student League</span><strong>Top 30 <span>U.S.</span></strong></div><a className={styles.plainLink} href={`mailto:${portfolio.email}?subject=${encodeURIComponent('Let’s talk F1')}`}>Talk F1 with me <ArrowUpRight size={17} aria-hidden="true" /></a></div>
+          <div className={styles.racingCopy}><Flag size={28} aria-hidden="true" /><h2 id="racing-title">Formula 1.<br /><em>All of it.</em></h2><p>{portfolio.offTheClock.description}</p><a className={styles.plainLink} href={`mailto:${portfolio.email}?subject=${encodeURIComponent('Let’s talk F1')}`}>Talk F1 with me <ArrowUpRight size={17} aria-hidden="true" /></a></div>
         </div></div>
       </section>
 
