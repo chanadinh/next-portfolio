@@ -13,7 +13,7 @@
 .number{display:grid;place-items:center;width:30px;height:30px;flex-shrink:0;font-family:var(--font-label),monospace;font-size:10px;border:1px solid #9b9e97;color:#626663;background:#eeeae2}
 .connector{height:1px;flex:1;background:#c9c5be;position:relative}
 .connector::after{content:'';position:absolute;right:0;top:-3px;width:7px;height:7px;border-top:1px solid #9b9e97;border-right:1px solid #9b9e97;transform:rotate(45deg)}
-.selector:last-child .connector::after{display:none}
+.selector:last-of-type .connector::after{display:none}
 .discipline{font-family:var(--font-label),monospace;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#626663}
 .verb{font-size:13px;font-weight:600;line-height:1.6;margin-top:6px}
 .selector:hover .number{border-color:#a12e20;color:#a12e20}
@@ -31,7 +31,7 @@
 .choice[value=delivery]:focus-visible~.choices [for=skill-delivery]{outline:2px solid #a12e20;outline-offset:4px}
 .panels{background:#101214;color:#eeeae2;border-top:3px solid #ff6248}
 .panel{display:none;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:30px 50px;padding:38px;outline-offset:5px}
-.panel:focus-visible{outline:2px solid #a12e20}
+.panel:focus-visible{outline:2px solid #ff806a;outline-offset:-5px}
 .choice[value=ai]:checked~.panels [data-discipline=ai],
 .choice[value=software]:checked~.panels [data-discipline=software],
 .choice[value=security]:checked~.panels [data-discipline=security],
@@ -69,4 +69,58 @@
 .conceptTile{background:#22282c;color:#ff806a;border:1px solid #45494d}
 @media(max-width:950px){.panel{gap:25px;padding:28px}.diagram{padding:16px}.nodes{column-gap:22px}.nodes strong{font-size:9px}}
 @media(max-width:680px){.workbench{margin-top:48px}.heading{display:block}.heading .intro{max-width:none;margin-top:20px}.choices{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:10px;padding-bottom:18px}.selector{padding-right:12px}.stop{margin-bottom:8px}.selector:nth-child(2) .connector::after{display:none}.verb{font-size:12px}.discipline{font-size:10px}.panel{grid-template-columns:minmax(0,1fr);padding:24px;gap:26px}.panelTop{margin-bottom:14px}.story h4{font-size:24px}.diagram{max-width:420px;width:100%;justify-self:center}.nodes strong{font-size:10px}.inventory{grid-template-columns:1fr;gap:22px;padding-top:24px}.index{font-size:40px}}
-@media(forced-colors:active){.number,.panels,.nodes li{border:1px solid CanvasText}.choice:checked~.choices .number{forced-color-adjust:auto}}
+/* The logo ribbon is decorative; the complete, accessible inventory stays below. */
+.ribbon{overflow:hidden;border-block:1px solid #c9c5be;margin-bottom:25px;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ribbonTrack{display:flex;width:max-content;max-width:none}
+.ribbonGroup{display:flex;align-items:center;gap:32px;flex-shrink:0;padding:18px 32px 18px 0}
+.ribbonTool{display:flex;align-items:center;gap:12px;font-family:var(--font-label),monospace;font-size:12px;white-space:nowrap;color:#444843}
+.ribbonTool .logoTile{background:transparent}.ribbonTool i{width:4px;height:4px;background:#b53523;border-radius:50%;margin-left:20px}
+.explorerTop{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;min-height:36px}
+.explorerTop>span{display:flex;align-items:center;gap:9px;font-family:var(--font-label),monospace;font-size:10px;letter-spacing:.04em;color:#626663;text-transform:uppercase}
+.explorerTop>span>i{width:6px;height:6px;background:#a12e20;border-radius:50%}
+.choices{position:relative;--active-step:0;padding-bottom:20px}
+.selectionLine{position:absolute;height:3px;bottom:0;left:0;width:25%;background:#ff6248;transform:translateX(calc(var(--active-step)*100%));transition:transform .55s cubic-bezier(.22,1,.36,1)}
+.choice[value=software]:checked~.choices{--active-step:1}.choice[value=security]:checked~.choices{--active-step:2}.choice[value=delivery]:checked~.choices{--active-step:3}
+.selector{position:relative;transition:transform .3s}.number{transition:background .35s,color .35s,border-color .35s,transform .35s}.connector{transition:background .3s}
+.selector:hover .connector{background:#a12e20}.selector:hover .number{transform:translateY(-3px) rotate(-5deg)}
+.panels{position:relative;border-top:1px solid #34373a;overflow:hidden}
+.panels::before{content:'';position:absolute;inset:0 auto auto 0;width:40%;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent,#ff806a,transparent);z-index:1}
+.panel{position:relative;background:radial-gradient(ellipse at 100% 0,#ff62480a,transparent 60%)}
+.diagram{position:relative;overflow:hidden;background-color:#121719}
+.diagram::before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 45%,#ff62480d 50%,transparent 55%);transform:translateY(-90%)}
+.diagram figcaption,.circuit,.diagramFoot{position:relative}
+.baseWire{stroke:#ff62484d}.signal{stroke:#ffc2b5;stroke-width:2.8;stroke-linecap:round;stroke-dasharray:6 94;stroke-dashoffset:100;filter:drop-shadow(0 0 3px #ff6248)}
+.nodes li{position:relative;padding-right:22px;transition:border-color .3s,background .3s;box-shadow:0 5px 20px #00000020}
+.nodeLight{position:absolute;top:13px;right:10px;width:4px;height:4px;border-radius:50%;background:#686c70}
+.inventory{gap:24px}.toolGroup ul{gap:9px}.toolGroup li{position:relative;isolation:isolate;flex:1 1 115px;min-height:52px;padding:10px;gap:10px;background:#171b1e;border-color:#343b40;overflow:hidden;transform:perspective(600px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg));transition:transform .22s ease-out,border-color .3s,box-shadow .3s,background .3s}
+.toolGroup li::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;background:radial-gradient(140px circle at var(--pointer-x,50%) var(--pointer-y,50%),#ff624827,transparent 80%);transition:opacity .3s}
+.toolGroup li>span:last-child{min-width:0;overflow-wrap:anywhere}.toolGroup .logoTile{transition:transform .35s cubic-bezier(.22,1,.36,1);box-shadow:0 3px 10px #00000020}
+.evidence a svg{transition:transform .3s}.evidence a:hover svg{transform:translate(3px,-3px)}
+:global([data-motion=running]) .ribbonTrack{animation:toolRibbon 34s linear infinite}
+:global([data-motion=running]) .ribbon:hover .ribbonTrack{animation-play-state:paused}
+:global([data-motion=running]) .explorerTop>span>i{animation:connectionBreathe 3s ease-in-out infinite}
+:global([data-motion=running]) .panels::before{animation:panelSweep 7s linear infinite}
+:global([data-motion=running]) .story{animation:skillStoryEnter .65s cubic-bezier(.16,1,.3,1) backwards}
+:global([data-motion=running]) .diagram{animation:diagramEnter .85s .08s cubic-bezier(.16,1,.3,1) backwards}
+:global([data-motion=running]) .diagram::before{animation:diagramScan 7s linear infinite}
+:global([data-motion=running]) .signal{animation:signalTravel 6s linear infinite}
+:global([data-motion=running]) .nodes li{animation:nodeBreathe 6s calc(var(--node-index)*1.5s) ease-in-out infinite}
+:global([data-motion=running]) .nodeLight{animation:nodeLight 6s calc(var(--node-index)*1.5s) ease-in-out infinite}
+:global([data-motion=running]) .toolGroup h5{animation:skillStoryEnter .55s .12s ease-out backwards}
+:global([data-motion=running]) .toolGroup li{animation:toolEnter .6s calc(.12s + var(--tool-index)*.055s) cubic-bezier(.16,1,.3,1) backwards}
+:global([data-motion=running]) .index{animation:indexEnter .8s cubic-bezier(.16,1,.3,1) backwards}
+@keyframes toolRibbon{to{transform:translateX(-50%)}}
+@keyframes connectionBreathe{0%,100%{box-shadow:0 0 0 0 #a12e2025}50%{box-shadow:0 0 0 5px #a12e2000}}
+@keyframes panelSweep{from{transform:translateX(-100%)}to{transform:translateX(350%)}}
+@keyframes skillStoryEnter{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes diagramEnter{from{opacity:0;transform:translateX(24px) scale(.96)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes diagramScan{to{transform:translateY(90%)}}
+@keyframes signalTravel{to{stroke-dashoffset:0}}
+@keyframes nodeBreathe{0%,32%,100%{border-color:#45494d;background:#171b1e}10%,20%{border-color:#ff806a;background:#25201f}}
+@keyframes nodeLight{0%,32%,100%{background:#686c70;box-shadow:none}10%,20%{background:#ff806a;box-shadow:0 0 9px #ff6248}}
+@keyframes toolEnter{from{opacity:0;transform:translateY(20px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes indexEnter{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@media(hover:hover) and (pointer:fine){:global([data-motion=running]) .toolGroup li:hover{border-color:#ff806a80;box-shadow:0 10px 24px #00000030;transform:perspective(600px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg)) translateY(-3px)}:global([data-motion=running]) .toolGroup li:hover::before{opacity:1}:global([data-motion=running]) .toolGroup li:hover .logoTile{transform:rotate(-8deg) scale(1.12)}}
+@media(max-width:680px){.ribbonGroup{gap:22px;padding-block:14px}.ribbonTool{font-size:11px;gap:9px}.ribbonTool i{margin-left:10px}.explorerTop>span{font-size:9px}.selectionLine{display:none}.selector{border-bottom:1px solid #c9c5be;padding-bottom:14px}.choice[value=ai]:checked~.choices [for=skill-ai],.choice[value=software]:checked~.choices [for=skill-software],.choice[value=security]:checked~.choices [for=skill-security],.choice[value=delivery]:checked~.choices [for=skill-delivery]{border-bottom-color:#a12e20}.toolGroup li{flex-basis:120px}.panels{border-top:3px solid #ff6248}}
+@media(prefers-reduced-motion:reduce){.workbench *,.workbench *::before,.workbench *::after{animation:none!important;transition:none!important}.toolGroup li,.toolGroup li:hover,.toolGroup li:hover .logoTile{transform:none!important}}
+@media(forced-colors:active){.number,.panels,.nodes li{border:1px solid CanvasText}.choice:checked~.choices .number{forced-color-adjust:auto}.signal{stroke:Highlight}.ribbon{mask-image:none}}
