@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import { story } from '../../content/story';
+import SkillLogo from './SkillLogo';
 import styles from './skills-workbench.module.css';
 
 export default function SkillsWorkbench() {
@@ -30,7 +31,7 @@ export default function SkillsWorkbench() {
             <div className={styles.evidence}>
               <span className={styles.eyebrow}>A connection to my work</span>
               <p>{discipline.evidence}</p>
-              <a href={discipline.href}>{discipline.linkLabel}<ArrowUpRight size={15} aria-hidden="true" /></a>
+              <a href={discipline.href} target={discipline.href.startsWith('https://') ? '_blank' : undefined} rel={discipline.href.startsWith('https://') ? 'noopener noreferrer' : undefined}>{discipline.linkLabel}<ArrowUpRight size={15} aria-hidden="true" /></a>
             </div>
           </div>
 
@@ -46,7 +47,7 @@ export default function SkillsWorkbench() {
 
           <div className={styles.inventory}>
             {discipline.groups.map(group => <div className={styles.toolGroup} key={group.label}>
-              <h5>{group.label}</h5><ul>{group.tools.map(tool => <li key={tool}>{tool}</li>)}</ul>
+              <h5>{group.label}</h5><ul>{group.tools.map(tool => <li key={tool}><SkillLogo name={tool} /><span>{tool}</span></li>)}</ul>
             </div>)}
           </div>
         </div>)}

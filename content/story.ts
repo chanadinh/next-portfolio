@@ -34,7 +34,6 @@ export const story = {
       ],
     },
   ],
-  racingConnection: 'Racing has a place in my technical story, too. I placed in the top 30 in the U.S. AWS DeepRacer Student League.',
   toolkit: [
     {
       id: 'ai', name: 'AI & data', verb: 'Find the signal.', title: 'Turn information into something useful.',
@@ -75,8 +74,8 @@ export const story = {
     {
       id: 'delivery', name: 'Cloud & delivery', verb: 'Keep it moving.', title: 'Think beyond the code.',
       description: 'Cloud platforms, packaging, infrastructure, and version control round out my toolkit—the pieces around an application as it grows.',
-      evidence: 'Cloud has a place in my personal story, too: I placed in the top 30 in the U.S. AWS DeepRacer Student League.',
-      href: '#off-duty', linkLabel: 'The racing connection',
+      evidence: 'This portfolio’s source lives on GitHub, alongside the projects I share and maintain.',
+      href: 'https://github.com/chanadinh/next-portfolio', linkLabel: 'Explore the portfolio source',
       diagram: 'From source to release', diagramNote: 'Build. Review. Iterate.', flow: ['Source', 'Package', 'Infrastructure', 'Release'],
       groups: [
         { label: 'Platforms', tools: ['AWS', 'Azure'] },
