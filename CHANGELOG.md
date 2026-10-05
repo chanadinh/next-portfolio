@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/chanadinh/next-portfolio/compare/v1.3.0...v1.4.0) (2026-10-05)
+
+
+### Features
+
+* **portfolio:** match loading screens to the editorial design ([6e0ac45](https://github.com/chanadinh/next-portfolio/commit/6e0ac45c18ca69b3dfbfb027a4a017cbb6cbe6c4))
+
 # [1.3.0](https://github.com/chanadinh/next-portfolio/compare/v1.2.0...v1.3.0) (2026-10-04)
 
 
