@@ -19,7 +19,7 @@ export default function ContactForm() {
     } catch (error) { setStatus({ success: false, message: error instanceof Error ? error.message : 'Your message could not be sent. Please try email instead.' }); }
     finally { setPending(false); }
   }
-  return <form className={styles.contactForm} onSubmit={submit}>
+  return <form className={styles.contactForm} onSubmit={submit} data-reveal="right">
     <fieldset disabled={pending}><legend className={styles.srOnly}>Send Chan a message</legend>
       <div className={styles.formRow}><label>Name<input name="name" autoComplete="name" required maxLength={120} /></label><label>Email<input name="email" type="email" autoComplete="email" required maxLength={254} /></label></div>
       <label>What’s on your mind?<input name="subject" required maxLength={200} placeholder="A role, a project, a race…" /></label>
