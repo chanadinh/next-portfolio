@@ -36,9 +36,53 @@ export const story = {
   ],
   racingConnection: 'Racing has a place in my technical story, too. I placed in the top 30 in the U.S. AWS DeepRacer Student League.',
   toolkit: [
-    { name: 'AI & data', tools: 'RAG, LLMs, embeddings, vector search, PyTorch, OpenSearch, Azure AI Search, MongoDB, MySQL' },
-    { name: 'Software', tools: 'Python, Java, C/C++, TypeScript, SQL, React, Next.js, Node.js, FastAPI, Flask, PyQt/PySide6' },
-    { name: 'Cybersecurity', tools: 'MITRE ATT&CK, Sigma, OT/ICS security, threat intelligence, threat hunting' },
-    { name: 'Cloud & delivery', tools: 'AWS, Azure, Docker, Kubernetes, Terraform, Git/GitHub' },
+    {
+      id: 'ai', name: 'AI & data', verb: 'Find the signal.', title: 'Turn information into something useful.',
+      description: 'Retrieval, models, and data systems—the tools behind finding useful context and bringing it into an application.',
+      evidence: 'At Siemens Energy, my bid-support platform connected requirements to potential solutions using RAG, embeddings, vector search, and MongoDB.',
+      href: '#experience', linkLabel: 'Read the experience',
+      diagram: 'A retrieval workflow', diagramNote: 'Context before an answer.', flow: ['Documents', 'Retrieval', 'Context', 'Answer'],
+      groups: [
+        { label: 'Models & methods', tools: ['RAG', 'LLMs', 'Embeddings', 'PyTorch'] },
+        { label: 'Retrieval', tools: ['Vector search', 'OpenSearch', 'Azure AI Search'] },
+        { label: 'Data stores', tools: ['MongoDB', 'MySQL'] },
+      ],
+    },
+    {
+      id: 'software', name: 'Software', verb: 'Make it usable.', title: 'Connect the interface to the system.',
+      description: 'Languages, interfaces, and services that bring the parts of an application together, from the screen to the data behind it.',
+      evidence: 'For Escape Room Game, I built synchronized progress updates, WebSocket communication, MongoDB persistence, and live organizer controls.',
+      href: '#escape-room', linkLabel: 'Inside Escape Room',
+      diagram: 'A real-time interaction', diagramNote: 'One shared state.', flow: ['Player action', 'Server', 'Shared state', 'Live update'],
+      groups: [
+        { label: 'Languages', tools: ['Python', 'Java', 'C/C++', 'TypeScript', 'SQL'] },
+        { label: 'Interfaces', tools: ['React', 'Next.js', 'PyQt/PySide6'] },
+        { label: 'Services', tools: ['Node.js', 'FastAPI', 'Flask'] },
+      ],
+    },
+    {
+      id: 'security', name: 'Cybersecurity', verb: 'Question the system.', title: 'Keep people in the decision loop.',
+      description: 'Security context shapes how I think about a system: what it observes, how it is understood, and where a person needs to make the call.',
+      evidence: 'My work with the cybersecurity team at Siemens Energy spans audit-report automation, OT demonstrations, and a human-in-the-loop threat-hunting platform.',
+      href: '#experience', linkLabel: 'The cybersecurity chapter',
+      diagram: 'An analyst-led investigation', diagramNote: 'The analyst stays in the loop.', flow: ['Telemetry', 'Detection', 'Analyst review', 'Decision'],
+      groups: [
+        { label: 'Detection language', tools: ['MITRE ATT&CK', 'Sigma'] },
+        { label: 'Investigation', tools: ['Threat intelligence', 'Threat hunting'] },
+        { label: 'Operational context', tools: ['OT/ICS security'] },
+      ],
+    },
+    {
+      id: 'delivery', name: 'Cloud & delivery', verb: 'Keep it moving.', title: 'Think beyond the code.',
+      description: 'Cloud platforms, packaging, infrastructure, and version control round out my toolkit—the pieces around an application as it grows.',
+      evidence: 'Cloud has a place in my personal story, too: I placed in the top 30 in the U.S. AWS DeepRacer Student League.',
+      href: '#off-duty', linkLabel: 'The racing connection',
+      diagram: 'From source to release', diagramNote: 'Build. Review. Iterate.', flow: ['Source', 'Package', 'Infrastructure', 'Release'],
+      groups: [
+        { label: 'Platforms', tools: ['AWS', 'Azure'] },
+        { label: 'Packaging & infrastructure', tools: ['Docker', 'Kubernetes', 'Terraform'] },
+        { label: 'Version control', tools: ['Git/GitHub'] },
+      ],
+    },
   ],
 };

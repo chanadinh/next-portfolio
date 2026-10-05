@@ -7,6 +7,7 @@ import { displayFont, labelFont } from '../../lib/portfolio-fonts';
 import PortfolioHeader from './PortfolioHeader';
 import ContactForm from './ContactForm';
 import ProjectLibrary from './ProjectLibrary';
+import SkillsWorkbench from './SkillsWorkbench';
 import styles from './portfolio.module.css';
 
 function Chapter({ number, children }: { number: string; children: React.ReactNode }) {
@@ -63,7 +64,7 @@ export default function Portfolio() {
             <div className={styles.projectStoryCopy}><div className={styles.projectMeta}><span>{project.name}</span><span>{project.date}</span></div><h3>{project.title}</h3><p>{project.summary}</p><details><summary>Inside the build <span aria-hidden="true">+</span></summary><p>{project.contribution}</p><ul className={styles.tags} aria-label="Project technologies">{project.tools.map(tool => <li key={tool}>{tool}</li>)}</ul>{project.images.slice(1).map(photo => <figure className={styles.projectDetailPhoto} key={photo.src}><a href={photo.src} target="_blank" rel="noopener noreferrer" aria-label={`View ${photo.caption.toLowerCase()} at full size (opens a new tab)`}><Image src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} sizes="(max-width: 680px) calc(100vw - 44px), 46vw" /></a><figcaption>{photo.caption}</figcaption></figure>)}</details><p className={styles.evidence}>{project.evidence}</p></div>
           </article>)}</div>
           <ProjectLibrary />
-          <details className={styles.toolbox}><summary>The tools behind the work <span aria-hidden="true">+</span></summary><dl>{story.toolkit.map(item => <div key={item.name}><dt>{item.name}</dt><dd>{item.tools}</dd></div>)}</dl></details>
+          <SkillsWorkbench />
           <Link className={styles.plainLink} href="/play">Small experiments live in the playground <ArrowUpRight size={17} aria-hidden="true" /></Link>
         </div>
       </section>
