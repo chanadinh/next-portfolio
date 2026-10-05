@@ -1,3 +1,15 @@
+# [1.8.0](https://github.com/chanadinh/next-portfolio/compare/v1.7.1...v1.8.0) (2026-10-05)
+
+
+### Bug Fixes
+
+* **analytics:** replace placeholder reports with vercel data ([7f1d54a](https://github.com/chanadinh/next-portfolio/commit/7f1d54a0df85653cce0e8f07b374a83300528427))
+
+
+### Features
+
+* **portfolio:** animate the story and interactive skills ([cf6016c](https://github.com/chanadinh/next-portfolio/commit/cf6016cddc9078b5d2c8df6eeedf7bde421a3dc6))
+
 ## [1.7.1](https://github.com/chanadinh/next-portfolio/compare/v1.7.0...v1.7.1) (2026-10-05)
 
 
