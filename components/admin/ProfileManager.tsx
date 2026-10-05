@@ -59,23 +59,23 @@ export default function ProfileManager() {
     finally { setBusy(null); }
   }
 
-  const buttonClass = 'rounded-lg bg-gray-900 px-5 py-3 text-sm font-medium text-white hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 disabled:opacity-50 disabled:cursor-not-allowed';
-  return <section aria-labelledby="profile-heading" aria-busy={loading || Boolean(busy)} className="max-w-3xl text-gray-900">
+  const buttonClass = 'rounded-none bg-[#ff6248] px-5 py-3 text-sm font-medium text-[#101214] hover:bg-[#ff806a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b53523] disabled:opacity-50 disabled:cursor-not-allowed';
+  return <section aria-labelledby="profile-heading" aria-busy={loading || Boolean(busy)} className="max-w-3xl text-[#101214]">
     <h2 id="profile-heading" className="text-2xl font-semibold">Profile</h2>
-    <p className="mt-2 mb-6 text-gray-600">Keep your résumé and LinkedIn profile current. Saved changes apply across your portfolio.</p>
-    {error && <p role="alert" className="mb-5 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">{error}</p>}
-    {notice && <p role="status" className="mb-5 rounded-lg border border-green-200 bg-green-50 p-4 text-green-800">{notice}</p>}
+    <p className="mt-2 mb-6 text-[#626663]">Keep your résumé and LinkedIn profile current. Saved changes apply across your portfolio.</p>
+    {error && <p role="alert" className="mb-5 rounded-none border border-red-200 bg-red-50 p-4 text-red-800">{error}</p>}
+    {notice && <p role="status" className="mb-5 rounded-none border border-green-200 bg-green-50 p-4 text-green-800">{notice}</p>}
     {loading ? <p role="status">Loading profile settings…</p> : !settings ? <button type="button" className={buttonClass} onClick={load}>Try again</button> : <div className="grid gap-6">
-      <form onSubmit={uploadResume} className="rounded-xl border border-gray-200 p-5 sm:p-6">
+      <form onSubmit={uploadResume} className="rounded-none border border-[#c9c5be] p-5 sm:p-6">
         <fieldset disabled={Boolean(busy)}>
           <legend className="flex items-center gap-2 text-lg font-semibold"><FileText size={20} aria-hidden="true" /> Résumé</legend>
-          <div className="my-4 rounded-lg bg-gray-50 p-4 text-sm">
+          <div className="my-4 rounded-none bg-[#eeeae2] p-4 text-sm">
             <p className="break-words font-medium">{settings.resume?.filename || 'Current portfolio résumé'}</p>
-            {settings.resume && <p className="mt-1 text-gray-600">{Math.ceil(settings.resume.size / 1024)} KB · Updated {new Date(settings.resume.uploadedAt).toLocaleDateString()}</p>}
+            {settings.resume && <p className="mt-1 text-[#626663]">{Math.ceil(settings.resume.size / 1024)} KB · Updated {new Date(settings.resume.uploadedAt).toLocaleDateString()}</p>}
             <a href={settings.resumeUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block underline underline-offset-4">View current résumé ↗</a>
           </div>
           <label htmlFor="resume-file" className="block text-sm font-medium">Choose a new résumé</label>
-          <input ref={fileInput} id="resume-file" type="file" accept="application/pdf,.pdf" aria-describedby="resume-help" className="mt-2 block w-full rounded-lg border border-gray-300 p-3 text-sm file:mr-4 file:rounded file:border-0 file:bg-gray-100 file:p-2" onChange={event => {
+          <input ref={fileInput} id="resume-file" type="file" accept="application/pdf,.pdf" aria-describedby="resume-help" className="mt-2 block w-full rounded-none border border-[#a5a29b] p-3 text-sm file:mr-4 file:rounded-none file:border-0 file:bg-[#e2ded6] file:p-2" onChange={event => {
             setNotice(''); setError('');
             const next = event.target.files?.[0] || null;
             if (next && (!/\.pdf$/i.test(next.name) || next.size > MAX_RESUME_BYTES)) {
@@ -83,19 +83,19 @@ export default function ProfileManager() {
             }
             setFile(next);
           }} />
-          <p id="resume-help" className="mt-2 text-sm text-gray-600">PDF, up to 3 MB. Uploading replaces the file opened by your résumé buttons. Your homepage story stays as written.</p>
+          <p id="resume-help" className="mt-2 text-sm text-[#626663]">PDF, up to 3 MB. Uploading replaces the file opened by your résumé buttons. Your homepage story stays as written.</p>
           <div className="mt-5 flex flex-wrap items-center gap-5">
             <button type="submit" disabled={!file || Boolean(busy)} className={`${buttonClass} inline-flex items-center gap-2`}><Upload size={16} aria-hidden="true" />{busy === 'resume' ? 'Uploading…' : 'Upload résumé'}</button>
             {previewUrl && <a href={previewUrl} target="_blank" rel="noopener noreferrer" className="text-sm underline underline-offset-4">Preview selected PDF ↗</a>}
           </div>
         </fieldset>
       </form>
-      <form onSubmit={saveLink} className="rounded-xl border border-gray-200 p-5 sm:p-6">
+      <form onSubmit={saveLink} className="rounded-none border border-[#c9c5be] p-5 sm:p-6">
         <fieldset disabled={Boolean(busy)}>
           <legend className="flex items-center gap-2 text-lg font-semibold"><Linkedin size={20} aria-hidden="true" /> LinkedIn</legend>
           <label htmlFor="linkedin-url" className="mt-4 block text-sm font-medium">Profile URL</label>
-          <input id="linkedin-url" type="text" inputMode="url" autoComplete="url" required maxLength={2048} value={linkedinUrl} onChange={event => { setLinkedinUrl(event.target.value); setNotice(''); }} aria-describedby="linkedin-help" placeholder="https://www.linkedin.com/in/your-name" className="mt-2 w-full rounded-lg border border-gray-300 p-3 text-sm focus:border-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-800" />
-          <p id="linkedin-help" className="mt-2 text-sm text-gray-600">Paste your personal LinkedIn profile link. Tracking parameters are removed when you save.</p>
+          <input id="linkedin-url" type="text" inputMode="url" autoComplete="url" required maxLength={2048} value={linkedinUrl} onChange={event => { setLinkedinUrl(event.target.value); setNotice(''); }} aria-describedby="linkedin-help" placeholder="https://www.linkedin.com/in/your-name" className="mt-2 w-full rounded-none border border-[#a5a29b] p-3 text-sm focus:border-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-800" />
+          <p id="linkedin-help" className="mt-2 text-sm text-[#626663]">Paste your personal LinkedIn profile link. Tracking parameters are removed when you save.</p>
           <div className="mt-5 flex flex-wrap items-center gap-5">
             <button type="submit" disabled={Boolean(busy) || linkedinUrl === settings.linkedinUrl} className={buttonClass}>{busy === 'linkedin' ? 'Saving…' : 'Save LinkedIn link'}</button>
             <a href={settings.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-sm underline underline-offset-4">Open saved profile ↗</a>

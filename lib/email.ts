@@ -10,8 +10,8 @@ export const EMAIL_CONFIG = {
 
 // Logo configuration
 export const LOGO_CONFIG = {
-  url: 'https://pub-82d1a72b4d7f43a5b4a34f4664d53892.r2.dev/assets/logo-1755061334783.png',
-  alt: 'Chan Dinh Logo',
+  url: 'https://chandinh.dev/favicon-128x128.png?v=cd1',
+  alt: 'Chan Dinh / CD monogram',
 };
 
 // Function to update logo URL (useful for future updates)
@@ -79,306 +79,62 @@ export function getEmailServiceConfig(): EmailServiceConfig {
   };
 }
 
-// Generate email content
+// User-supplied content remains text inside the branded email templates.
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]!));
+}
+
+function emailFrame(label: string, title: string, content: string): string {
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(title)}</title></head>
+<body style="margin:0;padding:0;background:#101214;color:#101214;font-family:Arial,Helvetica,sans-serif;line-height:1.7">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#101214"><tr><td align="center" style="padding:32px 12px">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;border-collapse:collapse">
+<tr><td style="padding:24px 28px;background:#101214;border-bottom:3px solid #ff6248"><a href="https://chandinh.dev" style="color:#eeeae2;text-decoration:none"><img src="${escapeHtml(LOGO_CONFIG.url)}" alt="${escapeHtml(LOGO_CONFIG.alt)}" width="48" height="48" style="display:block;border:0"></a><p style="font-family:monospace;font-size:11px;letter-spacing:1px;color:#a3a6a9;margin:20px 0 0">${escapeHtml(label)}</p></td></tr>
+<tr><td style="padding:32px 28px;background:#eeeae2"><h1 style="font-size:30px;line-height:1.25;letter-spacing:-1px;font-weight:600;margin:0 0 24px">${escapeHtml(title)}</h1>${content}</td></tr>
+<tr><td style="padding:24px 28px;color:#a3a6a9;font-family:monospace;font-size:11px"><a href="https://chandinh.dev" style="color:#eeeae2;text-decoration:underline">chandinh.dev</a><br>AI / SOFTWARE / CYBERSECURITY</td></tr>
+</table></td></tr></table></body></html>`;
+}
+
 export function generateEmailContent(contactData: ContactData) {
-  const textContent = `
-New Contact Form Submission
+  const { name, email, subject, message, timestamp } = contactData;
+  const textContent = `New portfolio message
 
-Name: ${contactData.name}
-Email: ${contactData.email}
-Subject: ${contactData.subject}
-Message: ${contactData.message}
-Timestamp: ${contactData.timestamp.toLocaleString()}
+Name: ${name}
+Email: ${email}
+Subject: ${subject}
 
----
-Sent from your portfolio contact form
-  `.trim();
+${message}
 
-  const htmlContent = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>New Contact Form Submission</title>
-    <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #3b82f6; color: white; padding: 20px; border-radius: 8px 8px 0 0; }
-        .content { background: #f8fafc; padding: 20px; border-radius: 0 0 8px 8px; }
-        .field { margin-bottom: 15px; }
-        .label { font-weight: bold; color: #1e40af; }
-        .value { margin-left: 10px; }
-        .footer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>📧 New Contact Form Submission</h1>
-        </div>
-        <div class="content">
-            <div class="field">
-                <span class="label">Name:</span>
-                <span class="value">${contactData.name}</span>
-            </div>
-            <div class="field">
-                <span class="label">Email:</span>
-                <span class="value">${contactData.email}</span>
-            </div>
-            <div class="field">
-                <span class="label">Subject:</span>
-                <span class="value">${contactData.subject}</span>
-            </div>
-            <div class="field">
-                <span class="label">Message:</span>
-                <div class="value" style="margin-top: 10px; white-space: pre-wrap;">${contactData.message}</div>
-            </div>
-            <div class="field">
-                <span class="label">Timestamp:</span>
-                <span class="value">${contactData.timestamp.toLocaleString()}</span>
-            </div>
-        </div>
-        <div class="footer">
-            Sent from your portfolio contact form
-        </div>
-    </div>
-</body>
-</html>
-  `.trim();
-
+Received: ${timestamp.toISOString()}`;
+  const htmlContent = emailFrame('PORTFOLIO STUDIO / NEW MESSAGE', 'A new conversation.', `
+    <p style="font-size:14px;margin:0 0 8px"><strong>From</strong><br>${escapeHtml(name)} / ${escapeHtml(email)}</p>
+    <p style="font-size:14px;margin:0 0 24px"><strong>Subject</strong><br>${escapeHtml(subject)}</p>
+    <div style="border-top:1px solid #c9c5be;border-bottom:1px solid #c9c5be;padding:24px 0;font-size:16px;overflow-wrap:anywhere">${escapeHtml(message).replace(/\r?\n/g, '<br>')}</div>
+    <p style="font-family:monospace;font-size:11px;color:#626663;margin-top:24px">Received ${escapeHtml(timestamp.toISOString())}</p>`);
   return { textContent, htmlContent };
 }
 
-// Generate auto-reply email content
 export function generateAutoReplyContent(userData: AutoReplyData) {
-  const textContent = `
-Dear ${userData.name},
+  const textContent = `Hi ${userData.name},
 
-Thank you for reaching out to me through my portfolio website!
+Thanks for reaching out about "${userData.subject}". Your message is in my inbox. I’ll read it and get back to you as soon as I can.
 
-I have received your message regarding "${userData.subject}" and I appreciate you taking the time to contact me.
-
-I will review your message and get back to you as soon as possible, typically within 24-48 hours.
-
-In the meantime, if you have any urgent questions, feel free to reach out through my other channels:
-- LinkedIn: https://chandinh.dev/linkedin
-- GitHub: https://github.com/chanadinh
-- Email: chandinh.jobs@gmail.com
-
-Best regards,
 Chan Dinh
-AI/ML Developer & Software Engineer
+AI, software & cybersecurity
+https://chandinh.dev
+LinkedIn: https://chandinh.dev/linkedin
+GitHub: https://github.com/chanadinh
+Email: chandinh.jobs@gmail.com
 
----
-This is an automated confirmation message. Please do not reply to this email.
-  `.trim();
-
-  const htmlContent = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Thank You - Message Received</title>
-    <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
-            line-height: 1.6; 
-            color: #1f2937; 
-            margin: 0; 
-            padding: 0; 
-            background-color: #f9fafb;
-        }
-        .container { 
-            max-width: 600px; 
-            margin: 0 auto; 
-            background: white; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .header { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            color: white; 
-            padding: 30px 20px; 
-            text-align: center; 
-            position: relative;
-        }
-        .logo-container {
-            margin-bottom: 20px;
-        }
-        .logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: white;
-            padding: 15px;
-            display: inline-block;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .header h1 { 
-            margin: 0 0 10px 0; 
-            font-size: 28px; 
-            font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .header p { 
-            margin: 0; 
-            font-size: 16px; 
-            opacity: 0.9;
-        }
-        .content { 
-            padding: 40px 30px; 
-            background: white;
-        }
-        .greeting { 
-            font-size: 20px; 
-            margin-bottom: 25px; 
-            color: #1f2937;
-            font-weight: 600;
-        }
-        .message { 
-            background: #f8fafc; 
-            padding: 25px; 
-            border-radius: 12px; 
-            margin: 25px 0; 
-            border-left: 5px solid #667eea;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        .message strong {
-            color: #667eea;
-            font-size: 16px;
-        }
-        .message em {
-            font-style: italic;
-            color: #4b5563;
-        }
-        .contact-info { 
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%); 
-            padding: 25px; 
-            border-radius: 12px; 
-            margin: 25px 0; 
-            border: 1px solid #e0f2fe;
-        }
-        .contact-info strong {
-            color: #0c4a6e;
-            font-size: 16px;
-        }
-        .contact-info a {
-            color: #0369a1;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .contact-info a:hover {
-            text-decoration: underline;
-        }
-        .social-links { 
-            margin: 30px 0; 
-            text-align: center;
-        }
-        .social-links a { 
-            display: inline-block; 
-            margin: 0 8px; 
-            padding: 12px 24px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            color: white; 
-            text-decoration: none; 
-            border-radius: 8px; 
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .social-links a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .signature {
-            margin: 30px 0;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .signature strong {
-            color: #667eea;
-            font-size: 18px;
-        }
-        .footer { 
-            margin-top: 30px; 
-            padding: 20px 30px; 
-            background: #f1f5f9; 
-            font-size: 12px; 
-            color: #64748b; 
-            text-align: center; 
-            border-top: 1px solid #e2e8f0;
-        }
-        .response-time {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
-            color: #92400e;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
-            font-weight: 500;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="logo-container">
-                <img src="${LOGO_CONFIG.url}" alt="${LOGO_CONFIG.alt}" class="logo">
-            </div>
-            <h1>✨ Message Received!</h1>
-            <p>Thank you for reaching out to me</p>
-        </div>
-        
-        <div class="content">
-            <div class="greeting">
-                Dear <strong>${userData.name}</strong>,
-            </div>
-            
-            <p>Thank you for reaching out to me through my portfolio website! I'm excited to hear from you.</p>
-            
-            <div class="message">
-                <strong>Your Message:</strong><br>
-                <em>"${userData.subject}"</em>
-            </div>
-            
-            <p>I have received your message and I truly appreciate you taking the time to contact me. Your interest means a lot!</p>
-            
-            <div class="response-time">
-                ⏰ I will review your message and get back to you as soon as possible, typically within <strong>24-48 hours</strong>.
-            </div>
-            
-            <div class="contact-info">
-                <strong>🔗 Other Ways to Connect:</strong><br><br>
-                • <strong>LinkedIn:</strong> <a href="https://chandinh.dev/linkedin">LinkedIn profile</a><br>
-                • <strong>GitHub:</strong> <a href="https://github.com/chanadinh">github.com/chanadinh</a><br>
-                • <strong>Email:</strong> <a href="mailto:chandinh.jobs@gmail.com">chandinh.jobs@gmail.com</a>
-            </div>
-            
-            <div class="social-links">
-                <a href="https://chandinh.dev/linkedin">Connect on LinkedIn</a>
-                <a href="https://github.com/chanadinh">View GitHub</a>
-            </div>
-            
-            <div class="signature">
-                <p>Best regards,<br>
-                <strong>Chan Dinh</strong><br>
-                AI/ML Developer & Software Engineer</p>
-            </div>
-        </div>
-        
-        <div class="footer">
-            This is an automated confirmation message. Please do not reply to this email.<br>
-            Sent from your portfolio contact form at <strong>chandinh.jobs@gmail.com</strong>
-        </div>
-    </div>
-</body>
-</html>
-  `.trim();
-
+This is an automated confirmation. To follow up, email chandinh.jobs@gmail.com.`;
+  const htmlContent = emailFrame('THE NEXT CHAPTER / MESSAGE RECEIVED', 'Good to hear from you.', `
+    <p style="margin:0 0 18px">Hi ${escapeHtml(userData.name)},</p>
+    <p style="margin:0 0 24px">Thanks for reaching out about <strong>${escapeHtml(userData.subject)}</strong>. Your message is in my inbox. I’ll read it and get back to you as soon as I can.</p>
+    <p style="margin:0 0 28px">Chan Dinh<br><span style="color:#626663;font-size:13px">AI, software &amp; cybersecurity</span></p>
+    <table role="presentation" cellpadding="0" cellspacing="0"><tr><td bgcolor="#ff6248" style="padding:12px 20px"><a href="https://chandinh.dev" style="color:#101214;font-size:13px;font-weight:600;text-decoration:none">Back to the story ↗</a></td></tr></table>
+    <p style="font-size:12px;margin:24px 0"><a href="https://chandinh.dev/linkedin" style="color:#101214">LinkedIn ↗</a> &nbsp; / &nbsp; <a href="https://github.com/chanadinh" style="color:#101214">GitHub ↗</a></p>
+    <p style="border-top:1px solid #c9c5be;padding-top:20px;color:#626663;font-size:11px;margin:0">This is an automated confirmation. To follow up, email <a href="mailto:chandinh.jobs@gmail.com" style="color:#101214">chandinh.jobs@gmail.com</a>.</p>`);
   return { textContent, htmlContent };
 }
 

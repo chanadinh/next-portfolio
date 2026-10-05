@@ -1,3 +1,4 @@
+import GameFrame from '../../components/portfolio/GameFrame';
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -20,11 +21,6 @@ export const metadata: Metadata = {
     description: 'Play Flappy Ado, an interactive Flappy Bird-style game with dynamic background music, high score tracking, and mobile-optimized gameplay.',
     images: ['/images/ado.png'],
   },
-  icons: {
-    icon: '/favicon-ado.ico',
-    shortcut: '/favicon-ado.ico',
-    apple: '/favicon-ado.ico',
-  },
 }
 
 export default function FlappyAdoLayout({
@@ -32,5 +28,5 @@ export default function FlappyAdoLayout({
 }: {
   children: React.ReactNode
 }) {
-  return children
+  return <GameFrame title="Flappy Ado">{children}</GameFrame>
 }
