@@ -18,10 +18,10 @@ export const metadata: Metadata = {
     siteName: 'Chan Dinh Portfolio',
     images: [
       {
-        url: '/images/logo.png',
+        url: '/images/portfolio-share.png',
         width: 1200,
         height: 630,
-        alt: 'Chan Dinh - AI/ML Developer Portfolio',
+        alt: 'Chan Dinh / AI, Software & Cybersecurity',
       },
     ],
     locale: 'en_US',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Chan Dinh — AI, Software & Cybersecurity',
     description: 'The story behind my work in AI, software, and cybersecurity—from mathematics to useful systems, with a little Formula 1 along the way.',
-    images: ['/images/logo.png'],
+    images: ['/images/portfolio-share.png'],
   },
   icons: {
     icon: [
@@ -57,9 +57,6 @@ export default function RootLayout({
         <meta name="msapplication-TileImage" content="/favicon-128x128.png?v=cd1" />
         <meta name="msapplication-TileColor" content="#101214" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Sniglet:wght@400;800&family=Comic+Neue:wght@300;400;700&display=swap" rel="stylesheet" />
       </head>
       <body>
         {children}

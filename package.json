@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint app components hooks lib models tests --ext .ts,.tsx",
+    "lint": "eslint app components lib models tests --ext .ts,.tsx",
     "seed": "tsx scripts/seed-data.ts",
     "seed:skills": "node scripts/seed-skills-working.js",
     "setup:email": "node scripts/setup-email-services.js",

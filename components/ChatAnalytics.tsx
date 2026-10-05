@@ -1,4 +1,5 @@
 'use client'
+import styles from './portfolio/editorial.module.css';
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
@@ -141,9 +142,7 @@ export default function ChatAnalytics() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
+      <p role="status" className={styles.inlineLoading}>Loading conversation insights…</p>
     )
   }
 
@@ -153,7 +152,7 @@ export default function ChatAnalytics() {
         <p className="text-red-500 mb-4">Error loading analytics: {error}</p>
         <button
           onClick={fetchAnalytics}
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors"
+          className="px-4 py-2 bg-[#ff6248] text-[#101214] rounded-none hover:bg-[#ff806a] transition-colors"
         >
           Retry
         </button>
@@ -173,14 +172,14 @@ export default function ChatAnalytics() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
+          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Chats</p>
-              <p className="text-2xl font-bold text-gray-900">{analytics.summary.totalChats || 0}</p>
+              <p className="text-sm font-medium text-[#626663]">Total Chats</p>
+              <p className="text-2xl font-bold text-[#101214]">{analytics.summary.totalChats || 0}</p>
             </div>
-            <Users className="w-8 h-8 text-primary" />
+            <Users className="w-8 h-8 text-[#b53523]" />
           </div>
         </motion.div>
 
@@ -188,14 +187,14 @@ export default function ChatAnalytics() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
+          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Messages</p>
-              <p className="text-2xl font-bold text-gray-900">{analytics.summary.totalMessages || 0}</p>
+              <p className="text-sm font-medium text-[#626663]">Total Messages</p>
+              <p className="text-2xl font-bold text-[#101214]">{analytics.summary.totalMessages || 0}</p>
             </div>
-            <MessageSquare className="w-8 h-8 text-primary" />
+            <MessageSquare className="w-8 h-8 text-[#b53523]" />
           </div>
         </motion.div>
 
@@ -203,14 +202,14 @@ export default function ChatAnalytics() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
+          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Unique IPs</p>
-              <p className="text-2xl font-bold text-gray-900">{analytics.summary.uniqueIPs || 0}</p>
+              <p className="text-sm font-medium text-[#626663]">Unique IPs</p>
+              <p className="text-2xl font-bold text-[#101214]">{analytics.summary.uniqueIPs || 0}</p>
             </div>
-            <Globe className="w-8 h-8 text-primary" />
+            <Globe className="w-8 h-8 text-[#b53523]" />
           </div>
         </motion.div>
 
@@ -218,14 +217,14 @@ export default function ChatAnalytics() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
+          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Avg Messages/Chat</p>
-              <p className="text-2xl font-bold text-gray-900">{analytics.summary.averageMessagesPerChat || 0}</p>
+              <p className="text-sm font-medium text-[#626663]">Avg Messages/Chat</p>
+              <p className="text-2xl font-bold text-[#101214]">{analytics.summary.averageMessagesPerChat || 0}</p>
             </div>
-            <TrendingUp className="w-8 h-8 text-primary" />
+            <TrendingUp className="w-8 h-8 text-[#b53523]" />
           </div>
         </motion.div>
 
@@ -233,14 +232,14 @@ export default function ChatAnalytics() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
+          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Active Today</p>
-              <p className="text-2xl font-bold text-gray-900">{analytics.summary.activeChatsToday || 0}</p>
+              <p className="text-sm font-medium text-[#626663]">Active Today</p>
+              <p className="text-2xl font-bold text-[#101214]">{analytics.summary.activeChatsToday || 0}</p>
             </div>
-            <Activity className="w-8 h-8 text-primary" />
+            <Activity className="w-8 h-8 text-[#b53523]" />
           </div>
         </motion.div>
       </div>
@@ -251,28 +250,28 @@ export default function ChatAnalytics() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
+          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-primary" />
+          <h3 className="text-lg font-semibold text-[#101214] mb-4 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-[#b53523]" />
             Recent Chat Sessions with Content
           </h3>
           <div className="space-y-4 max-h-96 overflow-y-auto">
             {(analytics.recentChats || []).map((chat, index) => (
               <div
                 key={chat.sessionId}
-                className={`p-4 rounded-lg border ${
-                  chat.isActive ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50'
+                className={`p-4 rounded-none border ${
+                  chat.isActive ? 'border-green-200 bg-green-50' : 'border-[#c9c5be] bg-[#eeeae2]'
                 }`}
               >
                 {/* Chat Header */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium text-[#444843]">
                       {formatIP(chat.userIp)}
                     </span>
                     <span className={`text-xs px-2 py-1 rounded-full ${
-                      chat.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                      chat.isActive ? 'bg-green-100 text-green-800' : 'bg-[#e2ded6] text-[#626663]'
                     }`}>
                       {chat.isActive ? 'Active' : 'Inactive'}
                     </span>
@@ -280,14 +279,14 @@ export default function ChatAnalytics() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => openChatModal(chat)}
-                      className="p-1 hover:bg-blue-100 rounded transition-colors text-blue-600"
+                      className="p-1 hover:bg-[#f3d3c9] rounded-none transition-colors text-[#a12e20]"
                       title="View full chat"
                     >
                       <Maximize2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => toggleChatExpansion(chat.sessionId)}
-                      className="p-1 hover:bg-gray-200 rounded transition-colors"
+                      className="p-1 hover:bg-[#d5d0c7] rounded-none transition-colors"
                     >
                       {expandedChats.has(chat.sessionId) ? (
                         <ChevronDown className="w-4 h-4" />
@@ -299,7 +298,7 @@ export default function ChatAnalytics() {
                 </div>
 
                 {/* Chat Info */}
-                <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                <div className="flex items-center gap-2 text-xs text-[#626663] mb-3">
                   <span>{formatUserAgent(chat.userAgent)}</span>
                   <span>•</span>
                   <span>{chat.messageCount} messages</span>
@@ -313,13 +312,13 @@ export default function ChatAnalytics() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="mt-3 pt-3 border-t border-gray-200"
+                    className="mt-3 pt-3 border-t border-[#c9c5be]"
                   >
                     {!chat.messages ? (
                       <div className="text-center py-2">
                         <button
                           onClick={() => fetchChatMessages(chat.sessionId)}
-                          className="px-3 py-1 bg-primary text-white text-xs rounded hover:bg-secondary transition-colors"
+                          className="px-3 py-1 bg-[#ff6248] text-[#101214] text-xs rounded-none hover:bg-[#ff806a] transition-colors"
                         >
                           Load Messages
                         </button>
@@ -329,10 +328,10 @@ export default function ChatAnalytics() {
                         {chat.messages.map((message, msgIndex) => (
                           <div
                             key={msgIndex}
-                            className={`p-2 rounded-lg text-xs ${
+                            className={`p-2 rounded-none text-xs ${
                               message.role === 'user' 
-                                ? 'bg-blue-100 text-blue-800 ml-4' 
-                                : 'bg-gray-100 text-gray-800 mr-4'
+                                ? 'bg-[#f3d3c9] text-[#7f281c] ml-4'
+                                : 'bg-[#e2ded6] text-[#303431] mr-4'
                             }`}
                           >
                             <div className="flex items-center gap-2 mb-1">
@@ -362,31 +361,31 @@ export default function ChatAnalytics() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
+          className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Globe className="w-5 h-5 text-primary" />
+          <h3 className="text-lg font-semibold text-[#101214] mb-4 flex items-center gap-2">
+            <Globe className="w-5 h-5 text-[#b53523]" />
             Top IP Addresses
           </h3>
           <div className="space-y-3">
             {(analytics.topIPs || []).map((ip, index) => (
-              <div key={ip.ip} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={ip.ip} className="flex items-center justify-between p-3 bg-[#eeeae2] rounded-none">
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-[#444843]">
                     {index + 1}.
                   </span>
                   <div>
-                    <div className="font-medium text-gray-900">{formatIP(ip.ip)}</div>
-                    <div className="text-xs text-gray-500">
+                    <div className="font-medium text-[#101214]">{formatIP(ip.ip)}</div>
+                    <div className="text-xs text-[#626663]">
                       {ip.chatCount} chats • {ip.messageCount} messages
                     </div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-medium text-primary">
+                  <div className="text-sm font-medium text-[#b53523]">
                     {ip.averageMessagesPerChat}
                   </div>
-                  <div className="text-xs text-gray-500">avg/chat</div>
+                  <div className="text-xs text-[#626663]">avg/chat</div>
                 </div>
               </div>
             ))}
@@ -399,27 +398,27 @@ export default function ChatAnalytics() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
-        className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
+        className="bg-[#f8f5ef] p-6 rounded-none shadow-none border border-[#c9c5be]"
       >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-primary" />
+        <h3 className="text-lg font-semibold text-[#101214] mb-4 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-[#b53523]" />
           Daily Statistics (Last 7 Days)
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
           {(analytics.dailyStats || []).map((day) => (
-            <div key={day._id} className="text-center p-3 bg-gray-50 rounded-lg">
-              <div className="text-sm font-medium text-gray-900 mb-1">
+            <div key={day._id} className="text-center p-3 bg-[#eeeae2] rounded-none">
+              <div className="text-sm font-medium text-[#101214] mb-1">
                 {new Date(day._id).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
               </div>
-              <div className="text-lg font-bold text-primary">{day.chatCount}</div>
-              <div className="text-xs text-gray-500">{day.messageCount} msgs</div>
+              <div className="text-lg font-bold text-[#b53523]">{day.chatCount}</div>
+              <div className="text-xs text-[#626663]">{day.messageCount} msgs</div>
             </div>
           ))}
         </div>
       </motion.div>
 
       {/* Last Updated */}
-      <div className="text-center text-sm text-gray-500">
+      <div className="text-center text-sm text-[#626663]">
         Last updated: {formatDate(analytics.timestamp)}
       </div>
 
@@ -429,19 +428,19 @@ export default function ChatAnalytics() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            className="bg-[#f8f5ef] rounded-none p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
           >
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h3 className="text-xl font-semibold">Full Chat Conversation</h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-[#626663] mt-1">
                   Session: {selectedChatData.sessionId} • IP: {formatIP(selectedChatData.userIp)} • 
                   Device: {formatUserAgent(selectedChatData.userAgent)}
                 </p>
               </div>
               <button
                 onClick={() => setShowChatModal(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg"
+                className="p-2 hover:bg-[#e2ded6] rounded-none"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -452,36 +451,36 @@ export default function ChatAnalytics() {
                 selectedChatData.messages.map((message: IMessage, index: number) => (
                   <div
                     key={index}
-                    className={`p-4 rounded-lg ${
+                    className={`p-4 rounded-none ${
                       message.role === 'user' 
-                        ? 'bg-blue-50 border-l-4 border-blue-400' 
-                        : 'bg-gray-50 border-l-4 border-gray-400'
+                        ? 'bg-[#f3e0d9] border-l-4 border-[#b53523]'
+                        : 'bg-[#eeeae2] border-l-4 border-gray-400'
                     }`}
                   >
                     <div className="flex items-center gap-3 mb-2">
                       <span className={`font-semibold ${
-                        message.role === 'user' ? 'text-blue-700' : 'text-gray-700'
+                        message.role === 'user' ? 'text-[#7f281c]' : 'text-[#444843]'
                       }`}>
                         {message.role === 'user' ? '👤 User' : '🤖 Medusa'}
                       </span>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-[#626663]">
                         {new Date(message.timestamp).toLocaleString()}
                       </span>
                     </div>
-                    <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                    <p className="text-[#303431] leading-relaxed whitespace-pre-wrap">
                       {message.content}
                     </p>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <MessageSquare className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                <div className="text-center py-8 text-[#626663]">
+                  <MessageSquare className="w-16 h-16 mx-auto mb-4 text-[#a5a29b]" />
                   <p>No messages available for this chat session</p>
                 </div>
               )}
             </div>
             
-            <div className="mt-6 pt-4 border-t border-gray-200 text-sm text-gray-500">
+            <div className="mt-6 pt-4 border-t border-[#c9c5be] text-sm text-[#626663]">
               <p>Session started: {selectedChatData.createdAt ? formatDate(selectedChatData.createdAt) : 'Unknown'}</p>
               <p>Last activity: {formatDate(selectedChatData.lastActivity)}</p>
               <p>Total messages: {selectedChatData.messageCount}</p>

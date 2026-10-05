@@ -26,3 +26,8 @@ Team credited by Devpost: Hannah Rauch, Phil-Ho Combatir, noor sahel, Chan Dinh.
 The site captions link back to the team submission.
 These are authentic project screenshots, not images generated for this portfolio.
 
+Portfolio share card: public/images/portfolio-share.svg and portfolio-share.png
+Original vector composition created for this portfolio, October 4, 2026.
+Uses the portfolio's Unbounded and Space Mono typefaces, converted to outlines.
+Font licenses are in public/fonts/Unbounded-OFL.txt and SpaceMono-OFL.txt.
+PNG exported at 1200 x 630 from the vector source; no stock imagery.

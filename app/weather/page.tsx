@@ -1,30 +1,14 @@
-'use client';
-
-import React from 'react';
-
-import Navigation from '../../components/Navigation';
+import { CloudSun } from 'lucide-react';
+import Link from 'next/link';
+import EditorialShell, { PageIntro } from '../../components/portfolio/EditorialShell';
+import styles from '../../components/portfolio/editorial.module.css';
 
 export default function WeatherPage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
-      <Navigation />
-      <div className="pt-20">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-4">
-              🌤️ Weather Dashboard
-            </h1>
-            <p className="text-xl text-blue-100">
-              Check current weather conditions and forecasts
-            </p>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <p className="text-gray-600 mb-4">Weather information will be displayed here.</p>
-            <p className="text-sm text-gray-500">Coming soon...</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return <EditorialShell><main id="page-content" className={styles.container}>
+    <PageIntro label="Playground / Work in progress" title="A change in the air.">A weather experiment, still taking shape.</PageIntro>
+    <section className={`${styles.paper} ${styles.weather}`} aria-labelledby="weather-heading">
+      <div className={styles.weatherSymbol} aria-hidden="true"><CloudSun /></div>
+      <div><p className={styles.eyebrow}>On the drawing board</p><h2 id="weather-heading">Forecast: more to come.</h2><p>This dashboard is a work in progress. Live conditions and forecasts are not available yet.</p><div className={styles.actions}><Link href="/play" className={styles.button}>Explore other experiments ↗</Link></div></div>
+    </section>
+  </main></EditorialShell>;
 }

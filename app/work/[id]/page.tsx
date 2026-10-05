@@ -7,9 +7,8 @@ import connectDB from '../../../lib/mongodb';
 import { publishedFilter, publicProjection } from '../../../lib/project-editor';
 import { PortfolioProject } from '../../../lib/project-types';
 import ProjectArticle from '../../../components/ProjectArticle';
-import PortfolioHeader from '../../../components/portfolio/PortfolioHeader';
-import styles from '../../../components/portfolio/portfolio.module.css';
-import { displayFont, labelFont } from '../../../lib/portfolio-fonts';
+import EditorialShell from '../../../components/portfolio/EditorialShell';
+import styles from '../../../components/portfolio/editorial.module.css';
 export const dynamic = 'force-dynamic';
 type Props = { params: Promise<{ id: string }> };
 async function readProject(id: string) {
@@ -25,5 +24,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectPage({ params }: Props) {
   const project = await readProject((await params).id);
   if (!project) notFound();
-  return <div className={`${styles.page} ${styles.casePage} ${displayFont.variable} ${labelFont.variable}`}><PortfolioHeader /><main className={styles.caseContainer}><Link href={project.placement === 'playground' ? '/play' : '/#work'} className={styles.plainLink}>← Back to projects</Link><ProjectArticle project={JSON.parse(JSON.stringify(project)) as PortfolioProject} /></main></div>;
+  return <EditorialShell><main id="page-content" className={`${styles.container} ${styles.caseContainer}`}><Link href={project.placement === 'playground' ? '/play' : '/#work'} className={styles.backLink}>← Back to projects</Link><ProjectArticle headingLevel="h1" project={JSON.parse(JSON.stringify(project)) as PortfolioProject} /></main></EditorialShell>;
 }
