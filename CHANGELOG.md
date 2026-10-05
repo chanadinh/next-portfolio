@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/chanadinh/next-portfolio/compare/v1.7.0...v1.7.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* **portfolio:** prevent mobile portrait caption overlap ([8de220c](https://github.com/chanadinh/next-portfolio/commit/8de220c61672f6559822667541929b1f6bed0967))
+
 # [1.7.0](https://github.com/chanadinh/next-portfolio/compare/v1.6.0...v1.7.0) (2026-10-05)
 
 
