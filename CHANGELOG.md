@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/chanadinh/next-portfolio/compare/v1.5.0...v1.6.0) (2026-10-05)
+
+
+### Features
+
+* **portfolio:** connect skills to project stories ([250475e](https://github.com/chanadinh/next-portfolio/commit/250475e07aed01bbc7ad58e5383cb257ee6b9c8d))
+
 # [1.5.0](https://github.com/chanadinh/next-portfolio/compare/v1.4.0...v1.5.0) (2026-10-05)
 
 
